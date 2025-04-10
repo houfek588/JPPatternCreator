@@ -25,12 +25,15 @@ class Measurements:
             return self.meas
 
 class BackSkeleton:
-    def __init__(self, measurements:Measurements, scale: float):
+    def __init__(self, x_pos, y_pos, measurements:Measurements, scale: float):
         self.m = measurements.get_all_measurements(scale)
         OH = self.m["OH"]
         OP = self.m["OP"]
         DZ = self.m["DZ"]
         Szad = self.m["Szad"]
+
+        self.x_pos = x_pos
+        self.y_pos = y_pos
 
         self.polygon = [(0,0),
                         (0, DZ),
@@ -39,45 +42,61 @@ class BackSkeleton:
                         (Szad/2, DZ/2),
                         (Szad/2, 0)]
 
-    def get_polygon(self, x_pos, y_pos):
+    def get_polygon(self):
         gl = []
         for p in self.polygon:
-            gl.append((p[0]+x_pos, p[1]+y_pos))
+            gl.append((p[0]+self.x_pos, p[1]+self.y_pos))
 
         return gl
 
-    def get_center_line(self, x_pos, y_pos):
-        origin = (0 + x_pos, 0 + y_pos)
-        end = (0 + x_pos, self.m["DZ"] + y_pos)
+    def get_center_line(self):
+        origin = (0 + self.x_pos, 0 + self.y_pos)
+        end = (0 + self.x_pos, self.m["DZ"] + self.y_pos)
         return [origin, end]
 
-    def get_waist_line(self, x_pos, y_pos):
-        origin = (0 + x_pos, self.m["DZ"] + y_pos)
-        end = ((1.2*self.m["OH"]/4) + x_pos, self.m["DZ"] + y_pos)
+    def get_waist_line(self):
+        origin = (0 + self.x_pos, self.m["DZ"] + self.y_pos)
+        end = ((1.2*self.m["OH"]/4) + self.x_pos, self.m["DZ"] + self.y_pos)
         return [origin, end]
 
-    def get_chest_line(self, x_pos, y_pos):
-        origin = (0 + x_pos, (self.m["DZ"]/2) + y_pos)
-        end = ((1.2*self.m["OH"]/4) + x_pos, (self.m["DZ"]/2) + y_pos)
+    def get_chest_line(self):
+        origin = (0 + self.x_pos, (self.m["DZ"]/2) + self.y_pos)
+        end = ((1.2*self.m["OH"]/4) + self.x_pos, (self.m["DZ"]/2) + self.y_pos)
         return [origin, end]
 
-    def get_neck_line(self, x_pos, y_pos):
-        origin = (0 + x_pos, 0 + y_pos)
-        end = ((1.2*self.m["OH"]/4) + x_pos, 0 + y_pos)
+    def get_neck_line(self):
+        origin = (0 + self.x_pos, 0 + self.y_pos)
+        end = ((1.2*self.m["OH"]/4) + self.x_pos, 0 + self.y_pos)
         return [origin, end]
 
-    def get_side_line(self, x_pos, y_pos):
-        chest_line = self.get_chest_line(x_pos, y_pos)
-        waist_line = self.get_waist_line(x_pos, y_pos)
+    def get_side_line(self):
+        chest_line = self.get_chest_line()
+        waist_line = self.get_waist_line()
 
-        origin = ((self.m["OH"]/4) + x_pos, chest_line[1][1])
-        end = ((self.m["OH"]/4) + x_pos, waist_line[1][1])
+        origin = ((self.m["OH"]/4) + self.x_pos, chest_line[1][1])
+        end = ((self.m["OH"]/4) + self.x_pos, waist_line[1][1])
         return [origin, end]
 
-    def get_back_line(self, x_pos, y_pos):
-        chest_line = self.get_chest_line(x_pos, y_pos)
-        neck_line = self.get_neck_line(x_pos, y_pos)
+    def get_back_line(self):
+        chest_line = self.get_chest_line()
+        neck_line = self.get_neck_line()
 
-        origin = ((self.m["Szad"] / 2) + x_pos, chest_line[1][1])
-        end = ((self.m["Szad"] / 2) + x_pos, neck_line[1][1])
+        origin = ((self.m["Szad"] / 2) + self.x_pos, chest_line[1][1])
+        end = ((self.m["Szad"] / 2) + self.x_pos, neck_line[1][1])
         return [origin, end]
+
+    def get_skeleton_lines(self):
+        w_line = self.get_waist_line()
+        ch_line = self.get_chest_line()
+        n_line = self.get_neck_line()
+        side_line = self.get_side_line()
+        back_line = self.get_back_line()
+        c_line = self.get_center_line()
+
+        lines = {"neck": n_line,
+                 "chest": ch_line,
+                 "waist": w_line,
+                 "center": c_line,
+                 "side": side_line,
+                 "back": back_line}
+        return lines

@@ -17,7 +17,7 @@ class MakePdf:
         self.fig = plt.figure(figsize=(page_width_mm * mm_to_inch, page_height_mm * mm_to_inch))
 
         # Create axes that match real-world mm coordinates
-        self.ax = self.fig.add_axes([0, 0, 1, 1])  # full-page axes
+        self.ax = self.fig.add_axes((0, 0, 1, 1))  # full-page axes
         self.ax.set_xlim(0, page_width_mm)
         self.ax.set_ylim(0, page_height_mm)
         self.ax.set_aspect('equal')
@@ -29,10 +29,8 @@ class MakePdf:
         x_pos = pos[0]
         y_pos = pos[1]
         circle = plt.Circle((x_pos, y_pos), radius, color=color, fill=fill, linewidth=line_width)
-        # Line from (10, 10) to (100, 95)
+
         add = 1.5*radius
-        # self.ax.plot([x_pos - add, x_pos + add], [y_pos, y_pos], color=color, linewidth=line_width)
-        # self.ax.plot([x_pos, x_pos], [y_pos - add, y_pos + add], color=color, linewidth=line_width)
         self.add_line((x_pos - add, y_pos),(x_pos + add, y_pos), color, line_width)
         self.add_line((x_pos, y_pos - add), (x_pos, y_pos + add), color, line_width)
         self.ax.add_patch(circle)
