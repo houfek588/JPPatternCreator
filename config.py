@@ -1,0 +1,1 @@
+# Constants: paper size, units, margins, settings

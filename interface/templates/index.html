@@ -1,0 +1,12 @@
+<form method="POST">
+  Bust: <input type="number" name="bust" value="100"><br>
+  Waist: <input type="number" name="waist" value="80"><br>
+  Hip: <input type="number" name="hip" value="41"><br>
+  Height: <input type="number" name="height" value="42"><br>
+  <button type="submit">Generate Pattern</button>
+</form>
+
+{% if pdf_url %}
+  <p><a href="{{ pdf_url }}" target="_blank">📄 View Pattern</a></p>
+  <p><a href="{{ pdf_url }}" download="{{ filename }}">⬇️ Download PDF</a></p>
+{% endif %}
