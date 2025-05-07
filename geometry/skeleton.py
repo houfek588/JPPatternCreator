@@ -1,4 +1,5 @@
 from reportlab.lib.units import mm, cm
+import geometry.base as base
 # import geomdl
 
 def mm_to_pt(val):
@@ -78,7 +79,8 @@ class BackSkeleton:
         origin = (0 + self.x_pos, 0 + self.y_pos)
         end = (0 + self.x_pos, self.m["DZ"] + self.y_pos)
         # return [origin, end]
-        return [origin[0], origin[1], end[0], end[1]]
+        return base.Line(origin, end)
+        # return [origin[0], origin[1], end[0], end[1]]
 
     def get_waist_line(self):
         """Returns a horizontal waist guideline defined by origin and end point coordinates."""
@@ -91,7 +93,8 @@ class BackSkeleton:
         x_end = x_start + (1.2 * self.m["OH"] / 4)  # 1.2 * quarter of outer height
 
         # Return as a flat list: [x1, y1, x2, y2]
-        return [x_start, y_waist, x_end, y_waist]
+        # return [x_start, y_waist, x_end, y_waist]
+        return base.Line((x_start, y_waist), (x_end, y_waist))
 
     def get_chest_line(self):
         """Returns a horizontal chest guideline as a flat list of coordinates: [x1, y1, x2, y2]."""
@@ -107,7 +110,8 @@ class BackSkeleton:
         x_end = x_start + (1.2 * self.m["OH"] / 4)  # Adjusted width
 
         # Return line as flat list
-        return [x_start, y_chest, x_end, y_chest]
+        # return [x_start, y_chest, x_end, y_chest]
+        return base.Line((x_start, y_chest), (x_end, y_chest))
 
     def get_armhole_line(self):
         """Returns a horizontal armhole guideline as a flat list of coordinates: [x1, y1, x2, y2]."""
@@ -120,7 +124,8 @@ class BackSkeleton:
         x_end = x_start + (1.2 * self.m["OH"] / 4)  # Adjusted line width
 
         # Return line coordinates as a flat list
-        return [x_start, y_armhole, x_end, y_armhole]
+        # return [x_start, y_armhole, x_end, y_armhole]
+        return base.Line((x_start, y_armhole), (x_end, y_armhole))
 
     def get_neck_line(self):
         """Returns a horizontal neckline guideline as a flat list of coordinates: [x1, y1, x2, y2]."""
@@ -129,7 +134,8 @@ class BackSkeleton:
         x_start = self.x_pos
         x_end = x_start + (1.2 * self.m["OH"] / 4)  # Line width based on opening height (OH)
 
-        return [x_start, y_neck, x_end, y_neck]
+        # return [x_start, y_neck, x_end, y_neck]
+        return base.Line((x_start, y_neck), (x_end, y_neck))
 
     def get_side_line(self):
         """
@@ -143,6 +149,7 @@ class BackSkeleton:
         armhole_line = self.get_armhole_line()
         waist_line = self.get_waist_line()
 
+
         # Convert 2 cm to points for consistent scaling
         offset = cm_to_pt(2)
 
@@ -150,10 +157,13 @@ class BackSkeleton:
         x = (self.m["OH"] / 4) + offset + self.x_pos
 
         # Use y-values from the corresponding line ends
-        y_top = armhole_line[3]  # end y of armhole line
-        y_bottom = waist_line[3]  # end y of waist line
+        # y_top = armhole_line[3]  # end y of armhole line
+        # y_bottom = waist_line[3]  # end y of waist line
+        y_top = armhole_line.get_end_point()[1]  # end y of armhole line
+        y_bottom = waist_line.get_end_point()[1]  # end y of waist line
 
-        return [x, y_top, x, y_bottom]
+        # return [x, y_top, x, y_bottom]
+        return base.Line((x, y_top), (x, y_bottom))
 
     def get_back_line(self):
         """
@@ -170,10 +180,16 @@ class BackSkeleton:
         x = (self.m["Szad"] / 2) + self.x_pos
 
         # y-coordinates from previously defined lines
-        y_top = neck_line[3]  # end y of neck line
-        y_bottom = armhole_line[3]  # end y of armhole line
+        # y_top = neck_line[3]  # end y of neck line
+        # y_bottom = armhole_line[3]  # end y of armhole line
+        y_top = neck_line.get_end_point()[1]  # end y of neck line
+        y_bottom = armhole_line.get_end_point()[1]  # end y of armhole line
 
-        return [x, y_bottom, x, y_top]
+        print("back line")
+        print(f"x: {x}, y_top: {y_top}, y_bottom: {y_bottom}")
+
+        # return [x, y_bottom, x, y_top]
+        return base.Line((x, y_bottom), (x, y_top))
 
     def get_skeleton_lines(self):
         """
@@ -221,21 +237,57 @@ class BackContour(BackSkeleton):
         offset1cm = cm_to_pt(1)
         offset1p5cm = cm_to_pt(1.5)
         sk = self.get_skeleton_lines()
+        neck = sk["neck"].get_start_point()
+        back = sk["back"].get_start_point()
+        chest = sk["chest"].get_start_point()
+        waist = sk["waist"].get_start_point()
+        side = sk["side"].get_start_point()
+        armhole = sk["armhole"].get_start_point()
+
         print(f"sk: {sk}")
+
+        shoulder = self.get_shoulder_line()
+
 
         points = []
 
-        points.append((sk["back"][0], sk["neck"][1]))
-        points.append((sk["neck"][0] + self.m["OH"] / 12, sk["neck"][1] - offset3cm))
-        points.append((sk["neck"][0] + self.m["OH"] / 12, sk["neck"][1]))
-        points.append((sk["neck"][0],sk["neck"][1]))
-        points.append((sk["chest"][0], sk["chest"][1]))
-        points.append((sk["waist"][0] + offset2cm, sk["waist"][1]))
-        points.append((sk["waist"][0] + offset2cm + self.m["OP"] / 4 - offset1cm, sk["waist"][1] + offset1cm))
-        points.append((sk["side"][0], sk["chest"][1]))
-        points.append((sk["side"][0] + offset1cm, sk["armhole"][1]))
+        # points.append((back[0], neck[1]))
+        # points.append((neck[0] + self.m["OH"] / 12, neck[1] - offset3cm))
+        points.append(shoulder.get_end_point())
+        points.append(shoulder.get_start_point())
+        points.append((neck[0] + self.m["OH"] / 12, neck[1]))
+        points.append((neck[0], neck[1]))
+        points.append((chest[0], chest[1]))
+        points.append((waist[0] + offset2cm, waist[1]))
+        points.append((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm))
+
+        back_side = base.Line((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm),
+                              (side[0], chest[1]))
+        points.append((back_side.get_x_point(armhole[1]), armhole[1]))
 
 
         print(f"points: {points}")
 
         return points
+
+    def get_shoulder_line(self):
+        offset3cm = cm_to_pt(3)
+        neck = self.get_neck_line().get_start_point()
+        back = self.get_back_line().get_start_point()
+
+        shoulder_line = base.Line((neck[0] + self.m["OH"] / 12, neck[1] - offset3cm), (back[0], neck[1]))
+        return shoulder_line
+
+    def get_armhole_edges(self):
+        points = self.get_contour()
+
+        shoulder = self.get_shoulder_line()
+
+        origin = shoulder.get_point_distance(cm_to_pt(3))
+        end = points[-1]
+
+        return (origin,end)
+
+class BackPattern(BackContour):
+    def __init__(self, x_pos, y_pos, measurements:Measurements, scale: float = 1):
+        BackContour.__init__(self, x_pos, y_pos, measurements, scale)

@@ -39,26 +39,27 @@ class MakePdf:
         # # Remove axes/labels
         # self.ax.axis('off')
 
-    def add_mark(self, pos: tuple, radius, color="black", line_width=1, fill=False):
+    def add_mark(self, pos: tuple, radius, color="black", line_width=1, fill=True):
         x_pos = pos[0]
         y_pos = pos[1]
-        circle = plt.Circle((x_pos, y_pos), radius, color=color, fill=fill, linewidth=line_width)
 
-        add = 1.5*radius
-        # self.add_line((x_pos - add, y_pos),(x_pos + add, y_pos), color, line_width)
-        # self.add_line((x_pos, y_pos - add), (x_pos, y_pos + add), color, line_width)
-        # self.ax.add_patch(circle)
+        rgb = colordict.ColorDict(norm=1)[color]
+        self.c.setStrokeColorRGB(rgb[0], rgb[1], rgb[2])
+        self.c.setLineWidth(line_width)
+        self.c.circle(x_pos, y_pos, radius)
 
     def add_curve_by_points(self, points, color="black", line_width=1, closed=True):
         rgb = colordict.ColorDict(norm=1)[color]
         self.c.setStrokeColorRGB(rgb[0], rgb[1], rgb[2])
         self.c.setLineWidth(line_width)
 
+        # draw line by line
         for i in range(len(points) - 1):
             x1, y1 = points[i]
             x2, y2 = points[i + 1]
             self.c.line(x1, y1, x2, y2)
-        self.c.line(points[1][0], points[1][1], points[3][0], points[3][1] + cm_to_pt(12))
+
+        # self.c.line(points[1][0], points[1][1], points[3][0], points[3][1] + cm_to_pt(12))
 
 
     def add_line(self, origin: tuple, end: tuple, color="black", line_width=1):
@@ -74,7 +75,13 @@ class MakePdf:
         self.c.setStrokeColorRGB(rgb[0], rgb[1], rgb[2])
         self.c.setLineWidth(line_width)
 
-        self.c.lines(lines)
+        draw_lines = []
+        for line in lines:
+            origin = line.get_start_point()
+            end = line.get_end_point()
+            draw_lines.append([origin[0], origin[1], end[0], end[1]])
+
+        self.c.lines(draw_lines)
         # self.c.line(origin[0], origin[1], end[0], end[1])
         # self.ax.plot([origin[0], end[0]], [origin[1], end[1]], color=color, linewidth=line_width)
 
