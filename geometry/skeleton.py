@@ -1,5 +1,7 @@
 from reportlab.lib.units import mm, cm
 import geometry.base as base
+import math
+from typing import Optional
 # import geomdl
 
 def mm_to_pt(val):
@@ -227,6 +229,7 @@ class BackSkeleton:
             "back": back_line
         }
 
+
 class BackContour(BackSkeleton):
     def __init__(self, x_pos, y_pos, measurements:Measurements, scale: float = 1):
         BackSkeleton.__init__(self, x_pos, y_pos, measurements, scale)
@@ -247,7 +250,7 @@ class BackContour(BackSkeleton):
         print(f"sk: {sk}")
 
         shoulder = self.get_shoulder_line()
-
+        side_curve = self.get_side_curve()
 
         points = []
 
@@ -259,11 +262,13 @@ class BackContour(BackSkeleton):
         points.append((neck[0], neck[1]))
         points.append((chest[0], chest[1]))
         points.append((waist[0] + offset2cm, waist[1]))
-        points.append((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm))
-
-        back_side = base.Line((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm),
-                              (side[0], chest[1]))
-        points.append((back_side.get_x_point(armhole[1]), armhole[1]))
+        # points.append((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm))
+        #
+        # back_side = base.Line((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm),
+        #                       (side[0], chest[1]))
+        # points.append((back_side.get_x_point(armhole[1]), armhole[1]))
+        points.append(side_curve.get_start_point())
+        points.append((side_curve.get_x_point(armhole[1]), armhole[1]))
 
 
         print(f"points: {points}")
@@ -288,6 +293,151 @@ class BackContour(BackSkeleton):
 
         return (origin,end)
 
+    def get_side_curve(self):
+        offset2cm = cm_to_pt(2)
+        offset1cm = cm_to_pt(1)
+        sk = self.get_skeleton_lines()
+        chest = sk["chest"].get_start_point()
+        waist = sk["waist"].get_start_point()
+        side = sk["side"].get_start_point()
+
+        return base.Line((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm),
+                  (side[0], chest[1]))
+
+
 class BackPattern(BackContour):
     def __init__(self, x_pos, y_pos, measurements:Measurements, scale: float = 1):
         BackContour.__init__(self, x_pos, y_pos, measurements, scale)
+        self.collar_depth = 12
+
+    def get_pattern_points(self, collar: bool = False, bezier_contour: bool = False):
+        contour = self.get_contour()
+        points = []
+
+        # starting points of final structure
+        points.append(self.get_armhole_edges()[0])
+        points.append(self.get_shoulder_line().get_start_point())
+
+        # different types of neckline
+        if collar:
+            # v-shape neckline for collar
+            points.append(self.get_shoulder_line().get_start_point())
+            back = base.Line(self.get_neck_line().get_start_point(), self.get_chest_line().get_start_point())
+            points.append(back.get_point_distance(cm_to_pt(self.collar_depth)))
+        else:
+            # smooth line for usage without collar
+            neck_line_slope = self.get_shoulder_line().normal_line()
+            neckhole_points = [self.get_shoulder_line().get_start_point(),
+                               # (contour[3][0] + neck_width * (5.0 / 6), contour[2][1]),
+                               (neck_line_slope.get_x_point(contour[3][1]), contour[3][1]),
+                               contour[3]]
+            # print(f"neckhole points: {neckhole_points}")
+            if bezier_contour:
+                for p in neckhole_points:
+                    points.append(p)
+            else:
+                neckhole = base.Bezier(neckhole_points)
+                for p in neckhole.sample():
+                    points.append(p)
+
+        # add points defined in basic contour -> back center and waist
+        points.append(contour[4])
+        points.append(contour[5])
+        points.append(contour[6])
+        points.append(contour[7])
+
+
+        # create armhole control points for bezier curve
+        armhole_shoulder_slope = self.get_shoulder_line().normal_line(self.get_armhole_edges()[0][0])
+        armhole_side_slope = self.get_side_curve().normal_line(self.get_armhole_edges()[1][0])
+        armhole_points = [self.get_armhole_edges()[1],
+                          armhole_side_slope.get_point_distance(-cm_to_pt(10)),
+                          armhole_shoulder_slope.get_point_distance(-cm_to_pt(13)),
+                          self.get_armhole_edges()[0]]
+
+        # switch draw smooth curve or curve input points
+        if bezier_contour:
+            for p in armhole_points:
+                points.append(p)
+        else:
+            armhole = base.Bezier(armhole_points)
+            for p in armhole.sample():
+                points.append(p)
+
+        return points
+
+    def generate_collar(self):
+        # ????????????????????????????????
+        collar = CollarPattern(self.x_pos, self.y_pos, self.m)
+        collar.set_collar_depth(self.collar_depth)
+        return collar
+
+
+class CollarPattern(BackContour):
+    def __init__(self, x_pos, y_pos, measurements: Measurements, scale: float = 1):
+        BackContour.__init__(self, x_pos, y_pos, measurements, scale)
+        self.upper_edge = None
+        self.lower_edge = None
+        self.collar_depth = None
+
+    def set_collar_depth(self, collar_depth: int):
+        self.collar_depth = collar_depth
+
+    def get_pattern_points(self, collar_depth: Optional[int] = None, bezier_contour: bool = False):
+        points = []
+
+        center_point = self.get_neck_line().get_start_point()
+        points.append(self.get_shoulder_line().get_start_point())
+        back = base.Line(center_point, self.get_chest_line().get_start_point())
+
+        if self.collar_depth:
+            points.append(back.get_point_distance(cm_to_pt(self.collar_depth)))
+        else:
+            if collar_depth:
+                self.set_collar_depth(collar_depth)
+                points.append(back.get_point_distance(cm_to_pt(self.collar_depth)))
+            else:
+                raise ValueError("Collar depth is not defined. Enter the value")
+
+
+        horiz_neck = base.Line(self.get_neck_line().get_point_distance(cm_to_pt(0.5)),
+                               (center_point[0] + cm_to_pt(-0.5), center_point[1] + cm_to_pt(-5)))
+        points.append(horiz_neck.get_start_point())
+        points.append(horiz_neck.get_end_point())
+
+        self.upper_edge = horiz_neck.normal_line(horiz_neck.get_end_point()[0])
+        self.lower_edge = self.upper_edge.parallel_line_point(self.get_shoulder_line().get_start_point())
+
+        collar_front_point = self.lower_edge.get_point_distance(cm_to_pt(13))
+        normal_lower = self.lower_edge.normal_line(collar_front_point[0])
+        up_front_point = normal_lower.intersection(self.upper_edge)
+
+        collar_height = normal_lower.line_length(up_front_point[0])
+        print(collar_height)
+
+        upper_edge_length = self.upper_edge.line_length(up_front_point[0])
+
+        front_slope = 3
+        point_to_slope_front = self.upper_edge.get_point_distance(upper_edge_length - cm_to_pt(front_slope))
+        print(f"upper_edge length: {self.upper_edge.line_length(up_front_point[0])}")
+
+        # points.append(point_to_slope_front)
+
+        front_curve_points = [self.upper_edge.get_point_distance(upper_edge_length - cm_to_pt(2*front_slope)),
+                              point_to_slope_front,
+                              collar_front_point]
+
+
+        # switch draw smooth curve or curve input points
+        if bezier_contour:
+            for p in front_curve_points:
+                points.append(p)
+        else:
+            front_curve = base.Bezier(front_curve_points)
+            for p in front_curve.sample():
+                points.append(p)
+
+        points.append(collar_front_point)
+        points.append(self.lower_edge.get_start_point())
+
+        return points

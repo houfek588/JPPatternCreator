@@ -85,83 +85,30 @@ def gener(file, OH, OP, DZ, Szad):
     print(m.get_all_measurements(1, "mm"))
 
     position_x = 3
-    position_y = 3
-    sk = skel.BackContour(position_x, position_y, m)
+    position_y = 8
+
+    # back part pattern
+    sk = skel.BackPattern(position_x, position_y, m)
     lines = sk.get_skeleton_lines()
 
-    # print(list(lines.values()))
-    # print(list(lines.keys()))
-    # print(len(list(lines.values())))
-    # c.lines(lines.values())
     p.add_lines(lines.values())
 
-    for k in lines.keys():
-        orig = lines[k].get_start_point()
-        end = lines[k].get_end_point()
-        print(f"{k}: origin: {orig}, end: {end}")
-    # p.add_line(orig, end)
-    #
-    # orig = lines["back"].get_start_point()
-    # end = lines["back"].get_end_point()
-    # print(f"BACK: origin: {orig}, end: {end}")
 
     points = sk.get_contour()
-    print(points)
     p.add_curve_by_points(points)
-
     p.add_text(position_x, lines["side"].get_start_point()[1] + 5, "Test pattern from Python")
-
     p.add_mark(sk.get_armhole_edges()[0], 5)
     p.add_mark(sk.get_armhole_edges()[1], 5)
+    p.add_curve_by_points(sk.get_pattern_points(collar=True, bezier_contour=False),line_width=3)
 
-    # p.add_bezier(points[1][0], points[1][1], points[2][0], points[2][1], points[3][0], points[3][1], points[3][0],
-    #              points[3][1])
-    # neck_width = math.fabs(points[3][0] - points[2][0])
-    # print(f"neck_width: {neck_width}")
-    # c = [points[1], (points[3][0] + neck_width*(5.0/6), points[2][1]), points[3]]
-    # print(f"c: {c}")
-    # b1 = CatmullRomSpline(c)
-    # b2 = Bezier(c)
-    # n = 50
-    # p_cat = b1.sample(n)
-    # p_bez = b2.sample(n)
-    # p.add_curve_by_points(p_cat)
-    # p.add_curve_by_points(p_bez)
-    #
-    # plot = True
-    # # print(po)
-    #
-    # # print(b1.get_point(1))
-    #
-    # if plot:
-    #     # n = 100
-    #
-    #     xb1 = []
-    #     yb1 = []
-    #     xb2 = []
-    #     yb2 = []
-    #     xc = []
-    #     yc = []
-    #     po = p_cat
-    #     for i in po:
-    #         xb1.append(i[0])
-    #         yb1.append(i[1])
-    #
-    #     po = p_bez
-    #     for i in po:
-    #         xb2.append(i[0])
-    #         yb2.append(i[1])
-    #
-    #     for k in c:
-    #         xc.append(k[0])
-    #         yc.append(k[1])
-    #
-    #     print(po)
-    #
-    #     plt.plot(xc, yc)
-    #     plt.plot(xb1, yb1)
-    #     plt.plot(xb2, yb2)
-    #     plt.show()
+    # collar part pattern
+    collar = skel.CollarPattern(position_x, position_y, m)
+
+    # collar = sk.generate_collar()
+    p.add_curve_by_points(collar.get_pattern_points(12))
+
+
+
 
     p.save_pdf()
 

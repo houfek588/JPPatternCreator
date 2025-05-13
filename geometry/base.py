@@ -78,6 +78,19 @@ class Line:
         x_new = self.point1[0] + dx
         return (x_new, self.get_y_point(x_new))
 
+    def line_length(self, x: Optional[float] = None) -> float:
+        if self.point2:
+            length = math.sqrt((self.point2[0] - self.point1[0]) ** 2 + (self.point2[1] - self.point1[1]) ** 2)
+            return length
+        if x is None:
+            raise ValueError("End point is not defined. Provide x value to compute it.")
+
+        y = self.get_y_point(x)
+        self.point2 = (x, y)
+        length = math.sqrt((self.point2[0] - self.point1[0]) ** 2 + (self.point2[1] - self.point1[1]) ** 2)
+        return length
+
+
     def intersection(self, other: 'Line') -> Tuple[float, float]:
         """
         Computes the intersection point with another line.
@@ -113,6 +126,9 @@ class Line:
         normal = self.normal_line()
         new_point = normal.get_point_distance(d)
         return Line(new_point, vector=self.vector)
+
+    def parallel_line_point(self, p: Tuple[float, float]) -> 'Line':
+        return Line(p, vector=self.vector)
 
     @staticmethod
     def _compute_vector(p1: Tuple[float, float], p2: Optional[Tuple[float, float]]) -> Optional[Tuple[float, float]]:
