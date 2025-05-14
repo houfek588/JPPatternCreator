@@ -71,15 +71,28 @@ class MakePdf:
                 """
         self.canvas.bezier(x1, y1, x2, y2, x3, y3, x4, y4)
 
-    def add_text(self, x: float, y: float, text: str, font_size: int = 11, align: str = "center"):
+    def add_text(self, x: float, y: float, text: str, font_size: int = 11, align: str = "center", leading=None):
         """
                 Draw text at the given position, flipped upright.
                 """
-        self.canvas.setFont("Helvetica", font_size)
+        # self.canvas.setFont("Helvetica", font_size)
         self.canvas.saveState()
         self.canvas.translate(x, y)
         self.canvas.scale(1, -1)  # Flip text upright
-        self.canvas.drawString(0, 0, text)
+
+        text_object = self.canvas.beginText()
+        text_object.setFont("Helvetica", font_size)
+        text_object.setTextOrigin(0, 0)
+
+        if leading:
+            text_object.setLeading(leading)
+
+        for line in text.split("\n"):
+            print(line)
+            text_object.textLine(line)
+
+        # self.canvas.drawString(0, 0, text)
+        self.canvas.drawText(text_object)
         self.canvas.restoreState()
 
     def save_pdf(self):
