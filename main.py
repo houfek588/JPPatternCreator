@@ -71,7 +71,7 @@ def export_pattern():
 
 def gener(file, OH, OP, DZ, Szad):
     # file = "test_outputs/test01.pdf"
-    p = pdf.MakePdf(file, "A2", False)
+    p = pdf.MakePdf(file, landscape=False)
 
     # OH = 100
     # OP = 80
@@ -95,22 +95,23 @@ def gener(file, OH, OP, DZ, Szad):
 
 
     points = sk.get_contour()
-    p.add_curve_by_points(points)
+    p.add_curve_by_points(points, closed=False)
     p.add_text(position_x, lines["side"].get_start_point()[1] + 5, "Test pattern from Python")
     p.add_mark(sk.get_armhole_edges()[0], 5)
     p.add_mark(sk.get_armhole_edges()[1], 5)
-    p.add_curve_by_points(sk.get_pattern_points(collar=True, bezier_contour=False),line_width=3)
+    p.add_curve_by_points(sk.get_pattern_points(collar=True, bezier_contour=False), line_width=3, closed=False)
 
     # collar part pattern
     collar = skel.CollarPattern(position_x, position_y, m)
 
     # collar = sk.generate_collar()
-    p.add_curve_by_points(collar.get_pattern_points(12))
+    p.add_curve_by_points(collar.get_pattern_points(12),line_width=3)
 
 
 
 
-    p.save_pdf()
+    # p.save_pdf()
+    p.save_png()
 
     return file
 
