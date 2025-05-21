@@ -1,12 +1,179 @@
-<form method="POST">
-  Bust: <input type="number" name="bust" value="100"><br>
-  Waist: <input type="number" name="waist" value="80"><br>
-  Hip: <input type="number" name="hip" value="41"><br>
-  Height: <input type="number" name="height" value="42"><br>
-  <button type="submit">Generate Pattern</button>
-</form>
+<!--<form method="POST">-->
+<!--  Bust: <input type="number" name="bust" value="100"><br>-->
+<!--  Waist: <input type="number" name="waist" value="80"><br>-->
+<!--  Hip: <input type="number" name="hip" value="41"><br>-->
+<!--  Height: <input type="number" name="height" value="42"><br>-->
+<!--  <button type="submit">Generate Pattern</button>-->
+<!--</form>-->
 
-{% if pdf_url %}
-  <p><a href="{{ pdf_url }}" target="_blank">📄 View Pattern</a></p>
-  <p><a href="{{ pdf_url }}" download="{{ filename }}">⬇️ Download PDF</a></p>
-{% endif %}
+<!--{% if pdf_url %}-->
+<!--  <p><a href="{{ pdf_url }}" target="_blank">📄 View Pattern</a></p>-->
+<!--  <p><a href="{{ pdf_url }}" download="{{ filename }}">⬇️ Download PDF</a></p>-->
+<!--{% endif %}-->
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pattern Creator</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+        header {
+            width: 100%;
+            background-color: #222;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header img {
+            height: 40px;
+            margin-left: 20px;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            background-color: #dfe6e9;
+            width: 100%;
+            padding: 20px;
+        }
+        .group {
+            margin: 0 40px;
+        }
+        .group h3 {
+            text-align: center;
+            background-color: #b2bec3;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .group input[type="text"] {
+            margin-left: 5px;
+            width: 60px;
+        }
+        .main {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px 10%;
+        }
+        .sliders {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+        .view {
+            border: 1px solid #ccc;
+            width: 400px;
+            height: 300px;
+            background-color: white;
+        }
+        .buttons {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/static/logo.png" alt="Logo">
+        <div class="title">Pattern Creator Application</div>
+        <div style="width: 40px;"></div>
+    </header>
+    <div class="controls">
+        <div class="group">
+            <h3>Upper</h3>
+            <label>VP <input type="text" id="vp"></label>
+            <label>OH <input type="text" id="oh"></label>
+            <label>OP <input type="text" id="op"></label>
+            <label>OS <input type="text" id="os"></label>
+            <label>DZ <input type="text" id="dz"></label>
+            <label>DB <input type="text" id="db"></label>
+        </div>
+        <div class="group">
+            <h3>Lower</h3>
+            <label>BDK <input type="text" id="bdk"></label>
+            <label>KD <input type="text" id="kd"></label>
+            <label>OST <input type="text" id="ost"></label>
+            <label>ONK <input type="text" id="onk"></label>
+            <label>UL <input type="text" id="ul"></label>
+            <label>OK <input type="text" id="ok"></label>
+        </div>
+    </div>
+    <div class="buttons">
+        <button onclick="generate()">Generate</button>
+    </div>
+    <div class="main">
+        <div class="sliders">
+            <label>Slider 1 <input type="range" id="slider1" min="0" max="10"></label>
+            <label>Slider 2 <input type="range" id="slider2" min="0" max="10"></label>
+        </div>
+        <div id="view" class="view"></div>
+        <div class="sliders">
+            <label>Slider 3 <input type="range" id="slider3" min="0" max="10"></label>
+            <label>Slider 4 <input type="range" id="slider4" min="0" max="10"></label>
+        </div>
+    </div>
+    <div class="buttons">
+        <button onclick="exportPDF()">Export PDF</button>
+        <button onclick="exportPNG()">Export PNG</button>
+    </div>
+    <script>
+        function getValues() {
+            const sliders = {
+                slider1: document.getElementById('slider1').value,
+                slider2: document.getElementById('slider2').value,
+                slider3: document.getElementById('slider3').value,
+                slider4: document.getElementById('slider4').value
+            };
+            const inputs = {};
+            ['vp','oh','op','os','dz','db','bdk','kd','ost','onk','ul','ok'].forEach(id => {
+                inputs[id] = document.getElementById(id).value;
+            });
+            return { sliders, inputs };
+        }
+
+        function generate() {
+            fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(getValues())
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('view').innerHTML = data.svg;
+            });
+        }
+
+        ['slider1','slider2','slider3','slider4'].forEach(id => {
+            document.getElementById(id).addEventListener('input', generate);
+        });
+
+        function exportPDF() { alert("Export PDF not implemented yet."); }
+        function exportPNG() { alert("Export PNG not implemented yet."); }
+    </script>
+</body>
+</html>
+
