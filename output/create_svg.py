@@ -1,4 +1,4 @@
-
+from typing import List, Tuple
 
 class SVGCreator:
     def __init__(self, width=500, height=500):
@@ -6,22 +6,26 @@ class SVGCreator:
         self.height = height
         self.elements = []
 
-    def add_line(self, points):
+    def add_line(self, start: Tuple[float, float], end: Tuple[float, float], color: str = "black", line_width: int = 1):
         """
         Draws a single line from a list of exactly two (x, y) tuples: origin and end point.
         """
-        if len(points) != 2:
-            raise ValueError("add_line requires exactly two points: origin and end point")
-        (x1, y1), (x2, y2) = points
+        # print(f"points: {points}")
+        # if len(points) != 2:
+        #     raise ValueError("add_line requires exactly two points: origin and end point")
+        x1, y1 = start
+        x2, y2 = end
         element = f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" style="stroke:black;stroke-width:2" />'
         self.elements.append(element)
 
-    def add_lines(self, lines):
+    def add_lines(self, lines: List, color: str = "black", line_width: int = 1):
         """
         Draws multiple lines. Each line is defined by exactly two (x, y) tuples in a list.
         """
+        print(f"lines: {lines}")
         for line in lines:
-            self.add_line(line)
+            print(f"start point: {line.get_start_point()}, end point: {line.get_end_point()}")
+            self.add_line(line.get_start_point(), line.get_end_point())
 
     def add_curve(self, points):
         """

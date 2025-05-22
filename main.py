@@ -3,6 +3,7 @@ import math
 import output.create_pdf as pdf
 import geometry.skeleton as skel
 import geometry.hosen as hosen
+import output.create_svg as svg
 import reportlab.lib.pagesizes as paper
 from geometry.base import CatmullRomSpline, Bezier
 # === PDF Export ===
@@ -86,6 +87,7 @@ def gen_back_body():
 def gen_hosen():
     my_paper = (skel.cm_to_pt(120), skel.cm_to_pt(140))
     p = pdf.MakePdf("test_outputs/test03.pdf", landscape=False, paper_size=my_paper)
+    s = svg.SVGCreator(my_paper[0], my_paper[1])
     # print(paper.A1)
     # print(skel.pt_to_cm(paper.A1[0]))
     # print(skel.pt_to_cm(paper.A1[1]))
@@ -122,8 +124,10 @@ def gen_hosen():
     lines = sk.get_skeleton_lines()
 
     p.add_lines(lines.values())
+    s.add_lines(lines.values())
 
     p.save_pdf()
+    s.save("test_outputs/svg_test03.svg")
 
 
 def gener(file, OH, OP, DZ, Szad):

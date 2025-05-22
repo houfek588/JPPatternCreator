@@ -31,9 +31,13 @@ class LineFactory:
 class HosenBaseSkeleton:
     def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
         self.raw_measurements = measurements
-        self.measurements = self.raw_measurements.get_all_measurements(scale, "pt")
-        self.x_pos = cm_to_pt(x_pos)
-        self.y_pos = cm_to_pt(y_pos)
+        # self.measurements = self.raw_measurements.get_all_measurements(scale, "pt")
+        self.measurements = self.raw_measurements.get_all_measurements(scale, "cm")
+
+        # self.x_pos = cm_to_pt(x_pos)
+        # self.y_pos = cm_to_pt(y_pos)
+        self.x_pos = x_pos
+        self.y_pos = y_pos
         self.factory = LineFactory(self.x_pos, self.y_pos, self.measurements)
 
     def get_center_line(self):
@@ -41,27 +45,27 @@ class HosenBaseSkeleton:
 
     def get_hip_line(self):
         y_offset = self.measurements["KD"]
-        width = self.measurements["OS"] / 4.0 + cm_to_pt(6)
+        width = self.measurements["OS"] / 4.0 + 6
         return self.factory.horizontal_line_at(y_offset, width)
 
     def get_knee_line(self):
-        y_offset = (self.measurements["KD"] / 2.0) + cm_to_pt(6)
+        y_offset = (self.measurements["KD"] / 2.0) + 6
         width = self.measurements["O_nk"]
         return self.factory.horizontal_line_at(y_offset, width)
 
     def get_calf_line(self):
-        y_offset = (self.measurements["KD"] / 3.0) + cm_to_pt(4)
+        y_offset = (self.measurements["KD"] / 3.0) + 4
         width = self.measurements["O_l"]
         return self.factory.horizontal_line_at(y_offset, width)
 
     def get_ankle_line(self):
-        y_offset = cm_to_pt(11)
-        width = self.measurements["O_kot"] + cm_to_pt(5)
+        y_offset = 11
+        width = self.measurements["O_kot"] + 5
         return self.factory.horizontal_line_at(y_offset, width)
 
     def get_ground_line(self):
         y_offset = 0
-        width = self.measurements["O_kot"] + cm_to_pt(7)
+        width = self.measurements["O_kot"] + 7
         return self.factory.horizontal_line_at(y_offset, width)
 
     def corner_divide_line(self):
@@ -124,7 +128,7 @@ class HosenFrontContour():
         front_point_x, front_point_y = self.get_front_line().get_end_point()
         y_level = front_point_y
 
-        line_wide = (self.base.measurements["OP"]/4.0) + cm_to_pt(4)
+        line_wide = (self.base.measurements["OP"]/4.0) + 4
         x_start = front_point_x
         x_end = x_start - line_wide
 
@@ -134,12 +138,12 @@ class HosenFrontContour():
         waist_point = self.get_front_waist_line().get_end_point()
 
         help_line_wide = (self.base.measurements["OP"]/4.0)
-        y_end = waist_point[1] - cm_to_pt(5)
+        y_end = waist_point[1] - 5
         x_end = waist_point[0] - help_line_wide
 
         help = base.Line(waist_point, (x_end, y_end))
 
-        line_wide = (self.base.measurements["OP"] / 4.0) + cm_to_pt(5)
+        line_wide = (self.base.measurements["OP"] / 4.0) + 5
         end = help.get_point_distance(-line_wide)
 
         return base.Line(waist_point, end)
@@ -210,14 +214,14 @@ class HosenCrotchSkeleton():
     def corner_slope(self):
         hip = self.base.get_hip_line().get_end_point()
         const = -15
-        x_end = hip[0] - cm_to_pt(const)
-        y_end = hip[1] - cm_to_pt(const)
+        x_end = hip[0] - const
+        y_end = hip[1] - const
 
         return base.Line(hip, (x_end, y_end))
 
     def crotch_back(self):
         slope = self.corner_slope()
-        wide = self.base.measurements["OS"]/20 + cm_to_pt(4)
+        wide = self.base.measurements["OS"]/20 + 4
         p = slope.get_point_distance(wide)
         normal = slope.normal_line(p[0])
 
@@ -229,7 +233,7 @@ class HosenCrotchSkeleton():
     def slope_wide(self):
         help_line = self.corner_slope()
         help1 = base.Line(self.crotch_back().get_start_point(), vector=help_line.get_vector())
-        dist = self.base.measurements["O_st"]/4 + cm_to_pt(3)
+        dist = self.base.measurements["O_st"]/4 + 3
         end = help1.get_point_distance(dist)
 
         return base.Line(help_line.get_end_point(), end)
