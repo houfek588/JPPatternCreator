@@ -1,44 +1,14 @@
-from flask import Flask, render_template, request, send_file, send_from_directory, jsonify
-# from your_pattern_module import export_pattern  # Replace with your actual module
-from main import gener
-import os
-
-# app = Flask(__name__)
-#
-# @app.route("/", methods=["GET", "POST"])
-# def index():
-#     if request.method == "POST":
-#         bust = float(request.form.get("bust", 100))
-#         waist = float(request.form.get("waist", 80))
-#         hip = float(request.form.get("hip", 41))
-#         height = float(request.form.get("height", 42))
-#         save_file = "test02.pdf"
-#         # pdf_path =
-#         pdf_path = gener(save_file, bust, waist, hip, height)
-#         filename = os.path.basename(pdf_path)
-#         # return render_template("index.html", pdf_url=f"{filename}", filename=filename)
-#         return render_template("index.html", pdf_url=f"{filename}", filename=filename)
-#
-#     return render_template("index.html")
-#
-# @app.route("/<filename>")
-# def view_pdf(filename):
-#     return send_from_directory(directory=".", path=filename)
-#
-# @app.route('/browse/<path:filename>')
-# def browse_files(filename):
-#     return send_from_directory('.', filename)
-#
-# if __name__ == "__main__":
-#     app.run(debug=True)
-
+from flask import Flask, render_template, request, jsonify, send_file
 import random
+# import cairosvg
+import io
+import json
 
 app = Flask(__name__)
+SAVE_PATH = "saved_data.json"
 
 # Dummy vector graphic generator
 def generate_svg(slider_values, inputs):
-    # Here you'd recalculate your real vector data based on sliders and inputs
     x = 50 + int(slider_values['slider1']) * 5
     y = 50 + int(slider_values['slider2']) * 5
     size = 20 + int(slider_values['slider3']) * 2
@@ -56,6 +26,30 @@ def generate():
     inputs = request.json.get("inputs", {})
     svg = generate_svg(sliders, inputs)
     return jsonify({"svg": svg})
+
+@app.route("/export/pdf", methods=["POST"])
+def export_pdf():
+    svg = request.json.get("svg", "")
+    print("Export PDF activated")
+    # pdf_data = cairosvg.svg2pdf(bytestring=svg.encode("utf-8"))
+    # return send_file(io.BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name='pattern.pdf')
+
+@app.route("/export/png", methods=["POST"])
+def export_png():
+    svg = request.json.get("svg", "")
+    print("Export PNG activated")
+    # png_data = cairosvg.svg2png(bytestring=svg.encode("utf-8"))
+    # return send_file(io.BytesIO(png_data), mimetype='image/png', as_attachment=True, download_name='pattern.png')
+
+@app.route("/save", methods=["POST"])
+def save():
+    data = request.json
+    try:
+        with open(SAVE_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+        return jsonify({"status": "ok", "message": "Data saved successfully."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

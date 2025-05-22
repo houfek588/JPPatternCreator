@@ -117,13 +117,7 @@ class MakePdf:
         print(f"PNG saved to: {png_name}")
 
 
-# class PaperSizes:
-#     def __init__(self):
-#         self.sizes = {"A4": (297, 210),
-#                       "A3": (420, 297),
-#                       "A2": (594, 420)}
-#     def get_paper_size(self, size):
-#         return self.sizes.get(size)
+
 
 
 

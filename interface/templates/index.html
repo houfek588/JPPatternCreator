@@ -16,85 +16,13 @@
 
 
 
-<!--<!DOCTYPE html>-->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Pattern Creator</title>
-    <style>
-        body {
-            font-family: Arial;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #f4f4f4;
-        }
-        header {
-            width: 100%;
-            background-color: #222;
-            color: white;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header img {
-            height: 40px;
-            margin-left: 20px;
-        }
-        .title {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .controls {
-            display: flex;
-            justify-content: center;
-            background-color: #dfe6e9;
-            width: 100%;
-            padding: 20px;
-        }
-        .group {
-            margin: 0 40px;
-        }
-        .group h3 {
-            text-align: center;
-            background-color: #b2bec3;
-            padding: 5px;
-            border-radius: 5px;
-        }
-        .group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .group input[type="text"] {
-            margin-left: 5px;
-            width: 60px;
-        }
-        .main {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 20px 10%;
-        }
-        .sliders {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 20px;
-        }
-        .view {
-            border: 1px solid #ccc;
-            width: 400px;
-            height: 300px;
-            background-color: white;
-        }
-        .buttons {
-            margin: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/basic_style.css">
+
 </head>
 <body>
     <header>
@@ -104,26 +32,31 @@
     </header>
     <div class="controls">
         <div class="group">
-            <h3>Upper</h3>
-            <label>VP <input type="text" id="vp"></label>
-            <label>OH <input type="text" id="oh"></label>
-            <label>OP <input type="text" id="op"></label>
-            <label>OS <input type="text" id="os"></label>
-            <label>DZ <input type="text" id="dz"></label>
-            <label>DB <input type="text" id="db"></label>
+            <h3>Body measurements</h3>
+            <table>
+                <tr><td>Height</td><td>VP</td><td><input type="text" id="vp"></td></tr>
+                <tr><td>Chest</td><td>OH</td><td><input type="text" id="oh"></td></tr>
+                <tr><td>Waist</td><td>OP</td><td><input type="text" id="op"></td></tr>
+                <tr><td>Hips</td><td>OS</td><td><input type="text" id="os"></td></tr>
+                <tr><td>Back length</td><td>DZ</td><td><input type="text" id="dz"></td></tr>
+                <tr><td>Hip length</td><td>DB</td><td><input type="text" id="db"></td></tr>
+            </table>
         </div>
         <div class="group">
-            <h3>Lower</h3>
-            <label>BDK <input type="text" id="bdk"></label>
-            <label>KD <input type="text" id="kd"></label>
-            <label>OST <input type="text" id="ost"></label>
-            <label>ONK <input type="text" id="onk"></label>
-            <label>UL <input type="text" id="ul"></label>
-            <label>OK <input type="text" id="ok"></label>
+            <h3>Legs measurements</h3>
+            <table>
+                <tr><td>Side length</td><td>BDK</td><td><input type="text" id="bdk"></td></tr>
+                <tr><td>Crotch length</td><td>KD</td><td><input type="text" id="kd"></td></tr>
+                <tr><td>Thigh</td><td>OST</td><td><input type="text" id="ost"></td></tr>
+                <tr><td>Above knee</td><td>ONK</td><td><input type="text" id="onk"></td></tr>
+                <tr><td>Calf</td><td>UL</td><td><input type="text" id="ul"></td></tr>
+                <tr><td>Ankle</td><td>OK</td><td><input type="text" id="ok"></td></tr>
+            </table>
         </div>
     </div>
     <div class="buttons">
         <button onclick="generate()">Generate</button>
+        <button onclick="saveInputs()">Save Inputs</button>
     </div>
     <div class="main">
         <div class="sliders">
@@ -140,6 +73,11 @@
         <button onclick="exportPDF()">Export PDF</button>
         <button onclick="exportPNG()">Export PNG</button>
     </div>
+    <footer>
+        Contact us: <a href="mailto:info@patterncreator.app">info@patterncreator.app</a> |
+        <a href="https://facebook.com/patterncreator" target="_blank">Facebook</a> |
+        <a href="https://instagram.com/patterncreator" target="_blank">Instagram</a>
+    </footer>
     <script>
         function getValues() {
             const sliders = {
@@ -171,9 +109,55 @@
             document.getElementById(id).addEventListener('input', generate);
         });
 
-        function exportPDF() { alert("Export PDF not implemented yet."); }
-        function exportPNG() { alert("Export PNG not implemented yet."); }
+        function exportPDF() {
+            const svg = document.getElementById('view').innerHTML;
+            fetch('/export/pdf', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ svg })
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'pattern.pdf';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        function exportPNG() {
+            const svg = document.getElementById('view').innerHTML;
+            fetch('/export/png', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ svg })
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'pattern.png';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        function saveInputs() {
+            const values = getValues();
+            fetch('/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(values)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "ok") alert("Data saved.");
+                else alert("Error: " + data.message);
+            });
+        }
     </script>
 </body>
 </html>
-
