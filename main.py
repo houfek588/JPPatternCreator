@@ -4,6 +4,9 @@ import output.create_pdf as pdf
 import geometry.skeleton as skel
 import geometry.hosen as hosen
 import output.create_svg as svg
+import data.manage as mn
+
+from reportlab.lib.units import mm, cm
 import reportlab.lib.pagesizes as paper
 from geometry.base import CatmullRomSpline, Bezier
 # === PDF Export ===
@@ -87,7 +90,8 @@ def gen_back_body():
 def gen_hosen():
     my_paper = (skel.cm_to_pt(120), skel.cm_to_pt(140))
     p = pdf.MakePdf("test_outputs/test03.pdf", landscape=False, paper_size=my_paper)
-    s = svg.SVGCreator(my_paper[0], my_paper[1])
+    s = svg.SVGCreator(120, 140)
+    print(f"my_paper: {my_paper}")
     # print(paper.A1)
     # print(skel.pt_to_cm(paper.A1[0]))
     # print(skel.pt_to_cm(paper.A1[1]))
@@ -115,19 +119,44 @@ def gen_hosen():
 
     # position_x = 30
     # position_y = 8
-    position_x = skel.pt_to_cm(my_paper[0]) * 0.5
+    position_x = 120 * 0.5
     position_y = 8
 
     # back part pattern
-    sk = hosen.HosenSkeleton(position_x, position_y, m)
+    sk = hosen.HosenPattern(position_x, position_y, m)
+
 
     lines = sk.get_skeleton_lines()
+    points = sk.get_pattern_points()
+    new = mn.scale_lines(lines, cm)
 
-    p.add_lines(lines.values())
+    p.add_lines(new.values())
+    p.add_curve_by_points(mn.scale_points(points, cm), line_width=3)
     s.add_lines(lines.values())
+
+    x_text = (new["hip"].get_end_point()[0] - new["hip"].get_start_point()[0]) * 0.35 + \
+             new["hip"].get_start_point()[0]
+    y_text = new["hip"].get_start_point()[1] + 20
+    text = ("HOSEN\n"
+            "\n"
+            "TEST PATTERN\n"
+            f"OP {OP}\n"
+            f"OS {OS}\n"
+            f"BDK {BDK}\n"
+            f"KD {KD}\n"
+            f"Ost {O_st}")
+    p.add_text(x_text, y_text, text, font_size=32)
 
     p.save_pdf()
     s.save("test_outputs/svg_test03.svg")
+
+    js = mn.SaveLinesToJson(lines)
+    js.save("test_outputs/json_test03.json")
+
+    # load = mn.LoadLinesFromJson("test_outputs/json_test03.json")
+    # # print(load.get_lines())
+    # print(f"hip line: {lines['hip'].get_edge_points()}")
+    # print(f"new line: {new['hip'].get_edge_points()}")
 
 
 def gener(file, OH, OP, DZ, Szad):

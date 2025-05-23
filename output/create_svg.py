@@ -24,7 +24,7 @@ class SVGCreator:
         """
         print(f"lines: {lines}")
         for line in lines:
-            print(f"start point: {line.get_start_point()}, end point: {line.get_end_point()}")
+            # print(f"start point: {line.get_start_point()}, end point: {line.get_end_point()}")
             self.add_line(line.get_start_point(), line.get_end_point())
 
     def add_curve(self, points):

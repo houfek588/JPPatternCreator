@@ -47,6 +47,9 @@ class Line:
         self.point2 = (x, y)
         return self.point2
 
+    def get_edge_points(self):
+        return (self.get_start_point(), self.get_end_point())
+
     def get_y_point(self, x: float) -> float:
         """
         Evaluate y for a given x using the line equation.
@@ -64,7 +67,6 @@ class Line:
         if self.is_horizontal():
             raise ValueError("Cannot compute x for horizontal line.")
         return (-self.b * y - self.c) / self.a
-
 
     def get_point_distance(self, d: float) -> Tuple[float, float]:
         """
@@ -89,7 +91,6 @@ class Line:
         self.point2 = (x, y)
         length = math.sqrt((self.point2[0] - self.point1[0]) ** 2 + (self.point2[1] - self.point1[1]) ** 2)
         return length
-
 
     def intersection(self, other: 'Line') -> Tuple[float, float]:
         """
@@ -242,23 +243,42 @@ class Bezier:
 
 
 class CatmullRomSpline:
-    def __init__(self, control_points: List[Tuple[float, float]], closed: bool = False):
+    def __init__(self, control_points: List[Tuple[float, float]], closed: bool = False, start_tangent: Optional[Tuple[float, float]] = None,
+                 end_tangent: Optional[Tuple[float, float]] = None):
         """
         Create a Catmull-Rom spline that interpolates all control points.
         :param control_points: list of (x, y) points
-        :param closed: whether the curve loops (connects end to start)
+        :param closed: whether the curve loops
+        :param start_tangent: optional tangent vector at the start (dx, dy)
+        :param end_tangent: optional tangent vector at the end (dx, dy)
         """
         if len(control_points) < 2:
             raise ValueError("At least 2 control points are required.")
         # self.points = control_points
-        self.closed = closed,
+        self.closed = closed
+        self.original_points = control_points
 
         if closed:
-            self.points = control_points + control_points[:2]  # wrap around
+            self.points = control_points + control_points[:2]  # wrap
         else:
-            # Pad ends by duplicating first and last
-            self.points = [control_points[0]] + control_points + [control_points[-1]]
-        self.original_points = control_points
+            # Pad using tangent-based extrapolation if provided
+            if start_tangent:
+                first_virtual = (
+                    control_points[0][0] - start_tangent[0],
+                    control_points[0][1] - start_tangent[1]
+                )
+            else:
+                first_virtual = control_points[0]
+
+            if end_tangent:
+                last_virtual = (
+                    control_points[-1][0] + end_tangent[0],
+                    control_points[-1][1] + end_tangent[1]
+                )
+            else:
+                last_virtual = control_points[-1]
+
+            self.points = [first_virtual] + control_points + [last_virtual]
 
     def __str__(self):
         # kind = "Closed" if self.closed else "Open"
@@ -285,28 +305,6 @@ class CatmullRomSpline:
         """
         Evaluate point on the Catmull-Rom spline at global parameter t in [0, 1].
         """
-        # n = len(self.points)
-        # print(f"n: {n}")
-        # segments = n if self.closed else n - 1
-        # print(f"segments: {segments}")
-        # if segments < 1:
-        #     raise ValueError("Not enough segments to evaluate spline.")
-        #
-        # t = max(0.0, min(1.0, t))
-        # print(f"t: {t}")
-        # t_scaled = t * segments
-        # print(f"t_scaled: {t_scaled}")
-        # i = int(t_scaled)
-        # print(f"i: {i}")
-        # local_t = t_scaled - i
-        # i = min(i, segments - 1)
-        #
-        # print(f"local_t: {local_t}")
-        # print(f"i: {i}")
-        #
-        # p0, p1, p2, p3 = self.get_segment_points(i)
-        # print(f"p0, p1, p2, p3: {p0, p1, p2, p3}")
-
         segment_count = len(self.points) - 3  # segments interpolate from P1 to P2
         t = max(0.0, min(1.0, t))  # clamp
         t_scaled = t * segment_count
@@ -325,29 +323,18 @@ class CatmullRomSpline:
         """Compute Catmull-Rom interpolation for four points at parameter t ∈ [0, 1]."""
         t2 = t * t
         t3 = t2 * t
-        # print(f"t2: {t2}")
-        # print(f"t3: {t3}")
         x = 0.5 * (
             (2 * p1[0]) +
             (-p0[0] + p2[0]) * t +
             (2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * t2 +
             (-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * t3
         )
-        # y = 0.5 * (
-        #     (2 * p1[1]) +
-        #     (-p0[1] + p2[1]) * t +
-        #     (2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * t2 +
-        #     (-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * t3
-        # )
         y = 0.5 * (
                 (2 * p1[1]) +
                 (-p0[1] + p2[1]) * t +
                 (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 +
                 (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3
         )
-
-        # print(f"x: {x}")
-        # print(f"y: {y}")
         return (x, y)
 
     def sample(self, resolution: int = 100) -> List[Tuple[float, float]]:
