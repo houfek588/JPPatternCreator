@@ -88,7 +88,7 @@ def gen_back_body():
 
 
 def gen_hosen():
-    my_paper = (skel.cm_to_pt(120), skel.cm_to_pt(140))
+    my_paper = (skel.cm_to_pt(120), skel.cm_to_pt(160))
     p = pdf.MakePdf("test_outputs/test03.pdf", landscape=False, paper_size=my_paper)
     s = svg.SVGCreator(120, 140)
     print(f"my_paper: {my_paper}")

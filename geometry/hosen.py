@@ -334,9 +334,37 @@ class HosenPattern(HosenSkeleton):
 
         left_curve = base.CatmullRomSpline(left_curve_points)
         points += left_curve.sample()
+        left_tangent = base.Line(points[-1], points[-2])
 
         # pattern bottom
-        points.append(lines["ground"].get_end_point())
+        left_ground = left_tangent.normal_line(left_tangent.get_start_point()[0])
+
+        # points.append(lines["ground"].get_end_point())
+
+        y_offset = 11
+        width = 12
+        foot_line = self.base.factory.horizontal_line_at(y_offset, width)
+        left_foot = left_tangent.parallel_line_point(foot_line.get_start_point())
+        left_intersection = left_ground.intersection(left_foot)
+
+        points.append(left_intersection)
+        points.append(foot_line.get_start_point())
+
+        # foot
+        bottom_offset = 3
+
+        contour1 = base.Line(left_intersection, vector=(-1,1))
+        contour1_point = contour1.get_point_distance(-10)
+
+        contour2 = contour1.normal_line(contour1_point[0])
+
+        contour_middle_point = (self.base.x_pos, contour2.get_y_point(self.base.x_pos))
+        contour_slope1 = (left_foot.get_x_point(contour_middle_point[1] - bottom_offset), contour_middle_point[1] - bottom_offset)
+
+
+        contour3 = contour1.parallel_line_point(contour_middle_point)
+
+
 
         # pattern right side
 
@@ -347,7 +375,48 @@ class HosenPattern(HosenSkeleton):
                              lines["slope_wide"].get_end_point(),
                              ]
         right_curve = base.CatmullRomSpline(right_curve_points)
-        points += right_curve.sample()
+        curve_points = right_curve.sample()
+        right_tangent = base.Line(curve_points[0], curve_points[1])
+        right_ground = right_tangent.normal_line(right_tangent.get_start_point()[0])
+
+        right_foot = right_tangent.parallel_line_point(foot_line.get_end_point())
+        right_intersection = right_ground.intersection(right_foot)
+        contour_slope2 = (right_foot.get_x_point(contour_middle_point[1] - bottom_offset), contour_middle_point[1] - bottom_offset)
+        contour3_point = (contour3.get_x_point(contour1_point[1]), contour1_point[1])
+        # points.append((right_foot.get_x_point(contour_middle_point[1] - offset), contour_middle_point[1] - offset))
+        # points.append((contour3.get_x_point(contour1_point[1]), contour1_point[1]))
+        # points.append(right_intersection)
+
+        smooth_foot = False
+        if smooth_foot:
+            foot_curve_points = [left_intersection,
+                                 contour1_point,
+                                 contour_slope1,
+                                 contour_middle_point,
+                                 contour_slope2,
+                                 contour3_point,
+                                 right_intersection]
+            foot_curve = base.CatmullRomSpline(foot_curve_points)
+            points += foot_curve.sample()
+        else:
+            points.append(left_intersection)
+            points.append(contour1_point)
+
+            points.append(contour_slope1)
+            points.append(contour_middle_point)
+
+            points.append(contour_slope2)
+            points.append(contour3_point)
+            points.append(right_intersection)
+
+
+
+
+        points.append(foot_line.get_end_point())
+        points.append(right_intersection)
+
+        points.append(right_ground.get_point_distance(-5))
+        points += curve_points
 
         end_tangent = lines["crotch"].normal_line(lines["crotch"].get_end_point()[0])
         right_curve_points = [lines["slope_wide"].get_end_point(),
