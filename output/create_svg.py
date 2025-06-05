@@ -22,9 +22,8 @@ class SVGCreator:
         """
         Draws multiple lines. Each line is defined by exactly two (x, y) tuples in a list.
         """
-        print(f"lines: {lines}")
+        # print(f"lines: {lines}")
         for line in lines:
-            # print(f"start point: {line.get_start_point()}, end point: {line.get_end_point()}")
             self.add_line(line.get_start_point(), line.get_end_point())
 
     def add_curve(self, points):
@@ -39,7 +38,7 @@ class SVGCreator:
         element = f'<path d="{path_data}" style="fill:none;stroke:red;stroke-width:2" />'
         self.elements.append(element)
 
-    def add_general_curve(self, points):
+    def add_curve_by_points(self, points):
         """
         Draws a general smooth path connecting all points with straight segments.
         """
@@ -58,3 +57,13 @@ class SVGCreator:
         svg_footer = "</svg>"
         with open(filename, "w") as f:
             f.write(f"{svg_header}\n  {svg_content}\n{svg_footer}")
+
+    def to_string(self):
+        """
+        Returns the full SVG markup as a string.
+        Useful for embedding in web pages.
+        """
+        svg_header = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
+        svg_content = "\n  ".join(self.elements)
+        svg_footer = "</svg>"
+        return f"{svg_header}\n  {svg_content}\n{svg_footer}"

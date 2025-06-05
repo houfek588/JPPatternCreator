@@ -1,6 +1,7 @@
 import json
 from typing import Optional, Dict, List
 import geometry.base as base
+from reportlab.lib.units import mm, cm
 
 
 class SaveLinesToJson():
@@ -56,6 +57,27 @@ class LoadLinesFromJson():
         # return base.Line(normal.get_start_point(), (end, div_y))
 
 
+class TextLine():
+    def __init__(self, x, y, text):
+        self.x = x
+        self.y = y
+        self.text = text
+
+    def get_text(self, position_scale: float = 1):
+        return (self.x * position_scale, self.y * position_scale, self.text)
+
+
+def mm_to_pt(val):
+    return val * mm
+
+
+def cm_to_pt(val):
+    return val * cm
+
+
+def pt_to_cm(val):
+    return val/cm
+
 def scale_line(line: base.Line, scale):
     start, end = line.get_edge_points()
 
@@ -77,3 +99,7 @@ def scale_points(point_list, scale):
         new.append((x*scale, y*scale))
 
     return new
+
+def scale_one_point(point, scale):
+    x, y = point
+    return (x*scale, y*scale)

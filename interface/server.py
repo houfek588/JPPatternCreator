@@ -3,18 +3,42 @@ import random
 # import cairosvg
 import io
 import json
+import main
 
 app = Flask(__name__)
 SAVE_PATH = "saved_data.json"
 
 # Dummy vector graphic generator
+def slider_values_scale(slider_values):
+    print(f"slider_values: {slider_values}")
+    # a = int(slider_values['slider1']) * 0.1
+    # b = int(slider_values['slider2']) * 0.24
+    # c = int(slider_values['slider3']) * 0.04
+    # d = int(slider_values['slider4']) * 0.3
+
+    a = float(slider_values['slider1']) * 1
+    b = float(slider_values['slider2']) * 1
+    c = float(slider_values['slider3']) * 1
+    d = float(slider_values['slider4']) * 1
+
+    return (a,b,c,d)
+
 def generate_svg(slider_values, inputs):
-    x = 50 + int(slider_values['slider1']) * 5
-    y = 50 + int(slider_values['slider2']) * 5
-    size = 20 + int(slider_values['slider3']) * 2
-    color = "red" if int(slider_values['slider4']) % 2 == 0 else "blue"
-    return f'<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">' \
-           f'<rect x="{x}" y="{y}" width="{size}" height="{size}" fill="{color}" /></svg>'
+
+    # x = 50 + int(slider_values['slider1']) * 5
+    # y = 50 + int(slider_values['slider2']) * 5
+    # size = 20 + int(slider_values['slider3']) * 2
+    # color = "red" if int(slider_values['slider4']) % 2 == 0 else "blue"
+
+    # a = int(slider_values['slider1']) * 0.1
+    # b = int(slider_values['slider2']) * 0.24
+    # c = int(slider_values['slider3']) * 0.04
+    # d = int(slider_values['slider4']) * 0.3
+    a, b, c, d = slider_values_scale(slider_values)
+
+    return main.gen_hosen_svg_string(a,b,c,d)
+    # return f'<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">' \
+    #        f'<rect x="{x}" y="{y}" width="{size}" height="{size}" fill="{color}" /></svg>'
 
 @app.route("/")
 def index():
@@ -29,10 +53,25 @@ def generate():
 
 @app.route("/export/pdf", methods=["POST"])
 def export_pdf():
-    svg = request.json.get("svg", "")
+    sliders = request.json.get("sliders", {})
+    inputs = request.json.get("inputs", {})
+
+    # a = int(sliders['slider1']) * 0.1
+    # b = int(sliders['slider2']) * 0.24
+    # c = int(sliders['slider3']) * 0.04
+    # d = int(sliders['slider4']) * 0.3
+    a, b, c, d = slider_values_scale(sliders)
+
+    main.save_hosen_to_pdf(a, b, c, d)
+
+    # svg = request.json.get("svg", "")
     print("Export PDF activated")
     # pdf_data = cairosvg.svg2pdf(bytestring=svg.encode("utf-8"))
     # return send_file(io.BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name='pattern.pdf')
+    # return send_file(io.BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name='pattern.pdf')
+    # with open("server_data/server_test03.pdf", "wb") as f:
+    #     f.write(pdf_data)
+    return send_file("server_data/server_test03.pdf", mimetype='application/pdf', as_attachment=True)
 
 @app.route("/export/png", methods=["POST"])
 def export_png():

@@ -1,7 +1,8 @@
 from reportlab.lib.units import mm, cm
 import geometry.base as base
-from geometry.skeleton import cm_to_pt, pt_to_cm
+from data.manage import cm_to_pt, pt_to_cm
 from geometry.measurements import LowerMeasurements
+from data.manage import TextLine
 import math
 from typing import Optional, Dict, List
 from dataclasses import dataclass
@@ -43,9 +44,9 @@ class HosenBaseSkeleton:
         self.y_pos = y_pos
         self.factory = LineFactory(self.x_pos, self.y_pos, self.measurements)
 
-        print(f"self.measurements: {self.measurements}")
-        print(f"self.x_pos: {self.x_pos}")
-        print(f"self.y_pos: {self.y_pos}")
+        # print(f"self.measurements: {self.measurements}")
+        # print(f"self.x_pos: {self.x_pos}")
+        # print(f"self.y_pos: {self.y_pos}")
 
     def get_center_line(self):
         return self.factory.center_line()
@@ -116,6 +117,7 @@ class HosenBaseSkeleton:
             "ground": g_line,
             "divide": d_line
         }
+
 
 class HosenFrontContour():
     def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
@@ -214,6 +216,7 @@ class HosenFrontContour():
             "upper_crotch": up_cr,
         }
 
+
 class HosenCrotchSkeleton():
     def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
         self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale)
@@ -273,6 +276,7 @@ class HosenCrotchSkeleton():
             "slope_wide": sl_w,
         }
 
+
 class HosenSkeleton:
     def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
         self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale)
@@ -288,162 +292,231 @@ class HosenSkeleton:
         return {**base, **front, **crotch}
 
 
+class HosenPatternParameter:
+    def __init__(self, waist_offset: float = 5, instep_width: float = 12, foot_finger_curve: float = 2,
+                 upper_corner_tangent: float = 15):
+        self.waist_offset = waist_offset
+        self.instep_width = instep_width
+        self.foot_finger_curve = foot_finger_curve
+        self.upper_corner_tangent = upper_corner_tangent
+
+
 class HosenPattern(HosenSkeleton):
     def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
         HosenSkeleton.__init__(self, x_pos, y_pos, measurements, scale)
+        self.lines = self.get_skeleton_lines()
 
-
-    def get_pattern_points(self) -> list[tuple[float, float]]:
-        # upper edge
-
-        lines = self.get_skeleton_lines()
-
+    def get_pattern_points(self, param: HosenPatternParameter) -> list[tuple[float, float]]:
+        """
+            Generates a list of 2D points forming the full outline of the garment pattern
+            using a combination of Bezier curves and Catmull-Rom splines.
+            """
         points = []
 
-        curve_start = lines["waist"].get_start_point()
-        point_to_slope_front = lines["waist"].get_end_point()
-        curve_end = lines["waist_b"].get_end_point()
+        # === 1. Waistline Curve (Upper Edge) ===
+        waist_offset = param.waist_offset
+        waist_start = self.lines["waist"].get_start_point()
+        waist_control = self.lines["waist"].get_end_point()
+        waist_end = self.lines["waist_b"].get_end_point()
 
-        front_curve_points = [curve_start, point_to_slope_front, curve_end]
-        front_curve = base.Bezier(front_curve_points)
-        points += front_curve.sample()
+        waist_start_offset = (waist_start[0], waist_start[1] + waist_offset)
+        waist_control_offset = (waist_control[0], waist_control[1] + waist_offset)
+        waist_end_offset = self.lines["upper_crotch"].get_point_distance(-waist_offset)
 
+        waist_curve = base.Bezier([waist_start_offset, waist_control_offset, waist_end_offset])
+        points += waist_curve.sample()
+        points.append(self.lines["upper_crotch"].get_end_point())
 
-        points.append(lines["upper_crotch"].get_end_point())
+        # === 2. Left Side Curve (Upper to Ground) ===
+        upper_crotch_end = self.lines["upper_crotch"].get_end_point()
+        side_wide_end = self.lines["side_wide"].get_end_point()
 
-        # pattern left side
-        start_tangent = lines["upper_crotch"].normal_line(lines["upper_crotch"].get_end_point()[0])
-        # end_tangent = lines["side_wide"].normal_line(lines["side_wide"].get_end_point()[0])
-        end_tangent = base.Line(lines["side_wide"].get_end_point(), lines["knee"].get_start_point())
-        # points.append(start_tangent.get_point_distance(15))
-        left_curve_points = [lines["upper_crotch"].get_end_point(),
-                             start_tangent.get_point_distance(10),
-                             end_tangent.get_point_distance(-5),
-                             lines["side_wide"].get_end_point(),
-                             ]
+        start_tangent = self.lines["upper_crotch"].normal_line(upper_crotch_end[0])
+        end_tangent = base.Line(side_wide_end, self.lines["knee"].get_start_point())
 
-        left_curve = base.Bezier(left_curve_points)
-        points += left_curve.sample()
-        # points += left_curve_points
+        left_upper_curve = base.Bezier([
+            upper_crotch_end,
+            start_tangent.get_point_distance(10),
+            end_tangent.get_point_distance(-5),
+            side_wide_end
+        ])
+        points += left_upper_curve.sample()
 
-        left_curve_points = [lines["side_wide"].get_end_point(),
-                             lines["knee"].get_start_point(),
-                             lines["calf"].get_start_point(),
-                             lines["ankle"].get_start_point(),
-                             lines["ground"].get_start_point()]
+        left_lower_curve = base.CatmullRomSpline([
+            side_wide_end,
+            self.lines["knee"].get_start_point(),
+            self.lines["calf"].get_start_point(),
+            self.lines["ankle"].get_start_point(),
+            self.lines["ground"].get_start_point()
+        ])
+        points += left_lower_curve.sample()
 
-        left_curve = base.CatmullRomSpline(left_curve_points)
-        points += left_curve.sample()
+        # === 3. Foot Section (Bottom Curve) ===
         left_tangent = base.Line(points[-1], points[-2])
-
-        # pattern bottom
         left_ground = left_tangent.normal_line(left_tangent.get_start_point()[0])
 
-        # points.append(lines["ground"].get_end_point())
-
-        y_offset = 11
-        width = 12
+        y_offset = self.lines['center'].get_end_point()[1] - self.lines['ankle'].get_start_point()[1]
+        width = param.instep_width
         foot_line = self.base.factory.horizontal_line_at(y_offset, width)
+
         left_foot = left_tangent.parallel_line_point(foot_line.get_start_point())
         left_intersection = left_ground.intersection(left_foot)
-
         points.append(left_intersection)
         points.append(foot_line.get_start_point())
 
-        # foot
-        bottom_offset = 3
-
-        contour1 = base.Line(left_intersection, vector=(-1,1))
+        # Define smooth foot curve
+        bottom_offset = param.foot_finger_curve
+        contour1 = base.Line(left_intersection, vector=(-1, 1))
         contour1_point = contour1.get_point_distance(-10)
 
         contour2 = contour1.normal_line(contour1_point[0])
+        contour_middle = (self.base.x_pos, contour2.get_y_point(self.base.x_pos))
+        contour_slope1 = (left_foot.get_x_point(contour_middle[1] - bottom_offset), contour_middle[1] - bottom_offset)
 
-        contour_middle_point = (self.base.x_pos, contour2.get_y_point(self.base.x_pos))
-        contour_slope1 = (left_foot.get_x_point(contour_middle_point[1] - bottom_offset), contour_middle_point[1] - bottom_offset)
+        contour3 = contour1.parallel_line_point(contour_middle)
 
+        # === 4. Right Side Curve (Ground to Hip) ===
+        right_lower_curve = base.CatmullRomSpline([
+            self.lines["ground"].get_end_point(),
+            self.lines["ankle"].get_end_point(),
+            self.lines["calf"].get_end_point(),
+            self.lines["knee"].get_end_point(),
+            self.lines["slope_wide"].get_end_point()
+        ])
+        right_curve_pts = right_lower_curve.sample()
 
-        contour3 = contour1.parallel_line_point(contour_middle_point)
-
-
-
-        # pattern right side
-
-        right_curve_points = [lines["ground"].get_end_point(),
-                             lines["ankle"].get_end_point(),
-                             lines["calf"].get_end_point(),
-                             lines["knee"].get_end_point(),
-                             lines["slope_wide"].get_end_point(),
-                             ]
-        right_curve = base.CatmullRomSpline(right_curve_points)
-        curve_points = right_curve.sample()
-        right_tangent = base.Line(curve_points[0], curve_points[1])
+        right_tangent = base.Line(right_curve_pts[0], right_curve_pts[1])
         right_ground = right_tangent.normal_line(right_tangent.get_start_point()[0])
 
         right_foot = right_tangent.parallel_line_point(foot_line.get_end_point())
         right_intersection = right_ground.intersection(right_foot)
-        contour_slope2 = (right_foot.get_x_point(contour_middle_point[1] - bottom_offset), contour_middle_point[1] - bottom_offset)
+        contour_slope2 = (right_foot.get_x_point(contour_middle[1] - bottom_offset), contour_middle[1] - bottom_offset)
         contour3_point = (contour3.get_x_point(contour1_point[1]), contour1_point[1])
-        # points.append((right_foot.get_x_point(contour_middle_point[1] - offset), contour_middle_point[1] - offset))
-        # points.append((contour3.get_x_point(contour1_point[1]), contour1_point[1]))
-        # points.append(right_intersection)
 
-        smooth_foot = False
+        # === 5. Append Foot Curve (Smooth or Cornered) ===
+        smooth_foot = True
         if smooth_foot:
-            foot_curve_points = [left_intersection,
-                                 contour1_point,
-                                 contour_slope1,
-                                 contour_middle_point,
-                                 contour_slope2,
-                                 contour3_point,
-                                 right_intersection]
-            foot_curve = base.CatmullRomSpline(foot_curve_points)
+            foot_curve = base.CatmullRomSpline([
+                left_intersection,
+                contour1_point,
+                contour_slope1,
+                contour_middle,
+                contour_slope2,
+                contour3_point,
+                right_intersection
+            ])
             points += foot_curve.sample()
         else:
-            points.append(left_intersection)
-            points.append(contour1_point)
-
-            points.append(contour_slope1)
-            points.append(contour_middle_point)
-
-            points.append(contour_slope2)
-            points.append(contour3_point)
-            points.append(right_intersection)
-
-
-
+            points += [
+                left_intersection, contour1_point, contour_slope1,
+                contour_middle, contour_slope2, contour3_point, right_intersection
+            ]
 
         points.append(foot_line.get_end_point())
         points.append(right_intersection)
 
-        points.append(right_ground.get_point_distance(-5))
-        points += curve_points
+        # === 6. Inner Right Curve (Hip to Crotch) ===
+        right_upper_corner_tangent = param.upper_corner_tangent
+        # points.append(right_ground.get_point_distance(-5))
+        points.append(right_intersection)
+        points += right_curve_pts
 
-        end_tangent = lines["crotch"].normal_line(lines["crotch"].get_end_point()[0])
-        right_curve_points = [lines["slope_wide"].get_end_point(),
-                             end_tangent.get_point_distance(15),
-                             lines["crotch"].get_end_point(),
-                             ]
-        right_curve = base.Bezier(right_curve_points)
-        points += right_curve.sample()
+        crotch_end = self.lines["crotch"].get_end_point()
+        end_tangent = self.lines["crotch"].normal_line(crotch_end[0])
+        right_inner_curve = base.Bezier([
+            self.lines["slope_wide"].get_end_point(),
+            end_tangent.get_point_distance(right_upper_corner_tangent),
+            crotch_end
+        ])
+        points += right_inner_curve.sample()
 
-        # crotch curve
-        x1, y1 = lines["hip"].get_end_point()
-        x2, y2 = lines["front"].get_start_point()
-        end_curve = (x2, y2 - (x1-x2))
+        # === 7. Final Front Crotch Curve ===
+        x1, y1 = self.lines["hip"].get_end_point()
+        x2, y2 = self.lines["front"].get_start_point()
+        end_curve_point = (x2, y2 - (x1 - x2))
 
-        left_curve_points = [lines["crotch"].get_end_point(),
-                             lines["crotch"].get_start_point(),
-                             lines["hip"].get_end_point(),
-                             lines["front"].get_start_point(),
-                             end_curve]
-        # left_curve = base.CatmullRomSpline(left_curve_points)
-        left_curve = base.Bezier(left_curve_points)
-        points += left_curve.sample()
+        front_crotch_curve = base.Bezier([
+            crotch_end,
+            self.lines["crotch"].get_start_point(),
+            self.lines["hip"].get_end_point(),
+            self.lines["front"].get_start_point(),
+            end_curve_point
+        ])
+        points += front_crotch_curve.sample()
 
-        # front crotch line
-        points.append(lines["front"].get_end_point())
+        # Close loop at top waist
+        points.append(waist_start_offset)
 
-        print(f"front_curve_points: {front_curve_points}")
-        print(f"points: {points}")
+        # Debug prints
+        # print(f"front_curve_points: {[waist_start_offset, waist_control_offset, waist_end_offset]}")
+        # print(f"points: {points}")
+
+        return points
+
+    def get_lines_description(self):
+        descriptions = []
+        y_offset = -0.1
+        x_offset = 0.5
+        x_center_position = self.lines["center"].get_start_point()[0] + x_offset
+
+
+        # waist description
+        x_pos = self.lines["waist"].get_start_point()[1] + y_offset
+        text = "WAIST LINE"
+        descriptions.append(TextLine(x_center_position, x_pos, text))
+
+        # hip description
+        x_pos = self.lines["divide"].get_start_point()[1] + y_offset
+        text = "HIP LINE"
+        descriptions.append(TextLine(x_center_position, x_pos, text))
+
+        # thight description
+        x_pos = self.lines["hip"].get_start_point()[1] + y_offset
+        text = "THIGHT LINE"
+        descriptions.append(TextLine(x_center_position, x_pos, text))
+
+        # knee description
+        x_pos = self.lines["knee"].get_start_point()[1] + y_offset
+        text = "KNEE LINE"
+        descriptions.append(TextLine(x_center_position, x_pos, text))
+
+        # calf description
+        x_pos = self.lines["calf"].get_start_point()[1] + y_offset
+        text = "CALF LINE"
+        descriptions.append(TextLine(x_center_position, x_pos, text))
+
+        # ankle description
+        x_pos = self.lines["ankle"].get_start_point()[1] + y_offset
+        text = "ANKLE LINE"
+        descriptions.append(TextLine(x_center_position, x_pos, text))
+
+        return descriptions
+
+    def get_main_description(self, title = None):
+        y_offset = -0.5*(self.lines["hip"].get_start_point()[1] - self.lines["knee"].get_start_point()[1])
+        x_offset = 0.5
+
+        x_pos = self.lines["center"].get_start_point()[0] + x_offset
+        y_pos = self.lines["hip"].get_start_point()[1] + y_offset
+
+        if not title:
+            title = self.base.measurements['title']
+
+        text = ("JOINED HOSEN\n"
+                "\n"
+                f"{title}\n"
+                f"OP {self.base.measurements['OP']}\n"
+                f"OS {self.base.measurements['OS']}\n"
+                f"BDK {self.base.measurements['BDK']}\n"
+                f"KD {self.base.measurements['KD']}\n"
+                f"Ost {self.base.measurements['O_st']}")
+
+        return TextLine(x_pos, y_pos, text)
+
+    def get_important_points(self):
+        points = []
+        points.append(self.lines["knee"].get_start_point())
+        points.append(self.lines["knee"].get_end_point())
+        points.append(self.lines["hip"].get_end_point())
 
         return points

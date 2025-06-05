@@ -1,7 +1,7 @@
 from reportlab.pdfgen import canvas
 import reportlab.lib.pagesizes as paper
 from typing import List, Tuple
-from geometry.skeleton import cm_to_pt
+from data.manage import cm_to_pt
 import colordict
 from pdf2image import convert_from_path
 import os
@@ -88,7 +88,7 @@ class MakePdf:
             text_object.setLeading(leading)
 
         for line in text.split("\n"):
-            print(line)
+            # print(line)
             text_object.textLine(line)
 
         # self.canvas.drawString(0, 0, text)

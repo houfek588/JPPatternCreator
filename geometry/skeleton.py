@@ -5,16 +5,7 @@ from geometry.measurements import Measurements
 from typing import Optional
 # import geomdl
 
-def mm_to_pt(val):
-    return val * mm
 
-
-def cm_to_pt(val):
-    return val * cm
-
-
-def pt_to_cm(val):
-    return val/cm
 
 
 

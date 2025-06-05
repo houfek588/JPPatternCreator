@@ -1,4 +1,5 @@
 from reportlab.lib.units import cm
+import json
 
 class Measurements:
     def __init__(self):
@@ -43,7 +44,6 @@ class Measurements:
         scaled_meas = {key: val * scale * conversion_factor for key, val in self.meas.items()}
 
         return scaled_meas
-
 
     def __str__(self):
         text = "Measured parameters:\n"
@@ -109,6 +109,23 @@ class LowerMeasurements:
 
         return scaled_meas
 
+    def save_to_json(self, filename):
+        # unpacked_lines = {}
+        # for l in self.lines.keys():
+        #     unpacked_lines[l] = self._unpack(self.lines[l])
+        # print(unpacked_lines)
+        data = json.dumps(self.meas, indent=4)
+        with open(filename, "w") as f:
+            f.write(data)
+
+        print(f"measurements saved to: {filename}")
+
+    def load_from_json(self, filename):
+        with open(filename, "r") as f:
+            data = f.read()
+
+        self.meas = json.loads(data)
+        print(f"measurements load from: {filename}")
 
     def __str__(self):
         text = "Measured parameters:\n"
