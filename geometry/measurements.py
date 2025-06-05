@@ -54,8 +54,11 @@ class Measurements:
         return text
 
 class LowerMeasurements:
-    def __init__(self):
-        self.meas = {}
+    def __init__(self, meas: dict = None):
+        if meas:
+            self.meas = meas
+        else:
+            self.meas = {}
 
     def add_hips(self, value):
         self.meas.update({"OS": float(value)})
@@ -105,7 +108,12 @@ class LowerMeasurements:
         conversion_factor = unit_map[unit]
 
         # Optional: return a new dictionary instead of modifying in place
-        scaled_meas = {key: val * scale * conversion_factor for key, val in self.meas.items()}
+        scaled_meas = {}
+        for key, val in self.meas.items():
+            if val:
+                scaled_meas[key] = val * scale * conversion_factor
+
+        # scaled_meas = {key: val * scale * conversion_factor for key, val in self.meas.items()}
 
         return scaled_meas
 

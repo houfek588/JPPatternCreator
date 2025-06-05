@@ -15,7 +15,7 @@ class SVGCreator:
         #     raise ValueError("add_line requires exactly two points: origin and end point")
         x1, y1 = start
         x2, y2 = end
-        element = f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" style="stroke:black;stroke-width:2" />'
+        element = f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" style="stroke:black;stroke-width:1" />'
         self.elements.append(element)
 
     def add_lines(self, lines: List, color: str = "black", line_width: int = 1):
@@ -45,7 +45,7 @@ class SVGCreator:
         if not points:
             return
         path_data = f"M{points[0][0]},{points[0][1]} " + " ".join(f"L{x},{y}" for x, y in points[1:])
-        element = f'<path d="{path_data}" style="fill:none;stroke:blue;stroke-width:2" />'
+        element = f'<path d="{path_data}" style="fill:none;stroke:red;stroke-width:2" />'
         self.elements.append(element)
 
     def save(self, filename="output.svg"):

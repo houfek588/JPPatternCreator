@@ -5,41 +5,65 @@ function getValues() {
                 slider3: document.getElementById('slider3').value,
                 slider4: document.getElementById('slider4').value
             };
+//            const inputs = {};
+//            ['title', 'VP','OH','OP','OS','DZ','DB','BDK','KD','O_st','O_nk','O_l','O_kot'].forEach(id => {
+//                inputs[id] = parseFloat(document.getElementById(id).value);
+//            });
             const inputs = {};
-            ['vp','oh','op','os','dz','db','bdk','kd','ost','onk','ul','ok'].forEach(id => {
-                inputs[id] = document.getElementById(id).value;
+            ['title', 'VP','OH','OP','OS','DZ','DB','BDK','KD','O_st','O_nk','O_l','O_kot'].forEach(id => {
+                const val = document.getElementById(id).value;
+                if (val === "") {
+                    inputs[id] = null;
+                } else {
+                    const asFloat = parseFloat(val);
+                    inputs[id] = isNaN(asFloat) ? val : asFloat;
+                }
             });
             return { sliders, inputs };
         }
 
 function generate() {
-        const values = getValues();
+//            const values = getValues();
+//            fetch('/generate', {
+//                method: 'POST',
+//                headers: { 'Content-Type': 'application/json' },
+//                body: JSON.stringify(values)
+//            })
+//            .then(res => res.json())
+//            .then(data => {
+//                const view = document.getElementById('view');
+//                view.innerHTML = data.svg;
+//
+//                // Enable SVG interaction
+//                const svgEl = view.querySelector('svg');
+//                if (svgEl) {
+//                    svgEl.setAttribute('id', 'generated-svg');
+//                    svgPanZoom('#generated-svg', {
+//                        zoomEnabled: true,
+//                        controlIconsEnabled: true,
+//                        fit: true,
+//                        center: true
+//                    });
+//                }
+//
+//        // Update slider value displays
+//                const [a, b, c, d] = data.scaled;
+//                document.getElementById('slider1_val').textContent = a.toFixed(2);
+//                document.getElementById('slider2_val').textContent = b.toFixed(2);
+//                document.getElementById('slider3_val').textContent = c.toFixed(2);
+//                document.getElementById('slider4_val').textContent = d.toFixed(2);
+//            });
+
             fetch('/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(values)
+                body: JSON.stringify(getValues())
             })
             .then(res => res.json())
             .then(data => {
                 document.getElementById('view').innerHTML = data.svg;
-                const [a, b, c, d] = data.scaled;
-                document.getElementById('slider1_val').textContent = a.toFixed(2);
-                document.getElementById('slider2_val').textContent = b.toFixed(2);
-                document.getElementById('slider3_val').textContent = c.toFixed(2);
-                document.getElementById('slider4_val').textContent = d.toFixed(2);
             });
         }
-
-//            fetch('/generate', {
-//                method: 'POST',
-//                headers: { 'Content-Type': 'application/json' },
-//                body: JSON.stringify(getValues())
-//            })
-//            .then(res => res.json())
-//            .then(data => {
-//                document.getElementById('view').innerHTML = data.svg;
-//            });
-//        }
 
 //        ['slider1','slider2','slider3','slider4'].forEach(id => {
 //            document.getElementById(id).addEventListener('input', generate);

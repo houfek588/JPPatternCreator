@@ -4,6 +4,7 @@ import random
 import io
 import json
 import main
+import geometry.measurements as meas
 
 app = Flask(__name__)
 SAVE_PATH = "saved_data.json"
@@ -36,7 +37,8 @@ def generate_svg(slider_values, inputs):
     # d = int(slider_values['slider4']) * 0.3
     a, b, c, d = slider_values_scale(slider_values)
 
-    return main.gen_hosen_svg_string(a,b,c,d)
+
+    return main.gen_hosen_svg_string("server_data/meas_test02.json", a, b, c, d)
     # return f'<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">' \
     #        f'<rect x="{x}" y="{y}" width="{size}" height="{size}" fill="{color}" /></svg>'
 
@@ -46,8 +48,14 @@ def index():
 
 @app.route("/generate", methods=["POST"])
 def generate():
+    print("generate activated")
     sliders = request.json.get("sliders", {})
     inputs = request.json.get("inputs", {})
+
+    print(f"inputs: {inputs}")
+    m = meas.LowerMeasurements(inputs)
+    m.save_to_json("server_data/meas_test02.json")
+
     svg = generate_svg(sliders, inputs)
     return jsonify({"svg": svg})
 
@@ -56,21 +64,13 @@ def export_pdf():
     sliders = request.json.get("sliders", {})
     inputs = request.json.get("inputs", {})
 
-    # a = int(sliders['slider1']) * 0.1
-    # b = int(sliders['slider2']) * 0.24
-    # c = int(sliders['slider3']) * 0.04
-    # d = int(sliders['slider4']) * 0.3
     a, b, c, d = slider_values_scale(sliders)
 
     main.save_hosen_to_pdf(a, b, c, d)
 
     # svg = request.json.get("svg", "")
     print("Export PDF activated")
-    # pdf_data = cairosvg.svg2pdf(bytestring=svg.encode("utf-8"))
-    # return send_file(io.BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name='pattern.pdf')
-    # return send_file(io.BytesIO(pdf_data), mimetype='application/pdf', as_attachment=True, download_name='pattern.pdf')
-    # with open("server_data/server_test03.pdf", "wb") as f:
-    #     f.write(pdf_data)
+
     return send_file("server_data/server_test03.pdf", mimetype='application/pdf', as_attachment=True)
 
 @app.route("/export/png", methods=["POST"])
@@ -82,6 +82,7 @@ def export_png():
 
 @app.route("/save", methods=["POST"])
 def save():
+    print("save inputs activated")
     data = request.json
     try:
         with open(SAVE_PATH, "w", encoding="utf-8") as f:

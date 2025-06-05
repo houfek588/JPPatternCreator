@@ -1,21 +1,3 @@
-<!--<form method="POST">-->
-<!--  Bust: <input type="number" name="bust" value="100"><br>-->
-<!--  Waist: <input type="number" name="waist" value="80"><br>-->
-<!--  Hip: <input type="number" name="hip" value="41"><br>-->
-<!--  Height: <input type="number" name="height" value="42"><br>-->
-<!--  <button type="submit">Generate Pattern</button>-->
-<!--</form>-->
-
-<!--{% if pdf_url %}-->
-<!--  <p><a href="{{ pdf_url }}" target="_blank">📄 View Pattern</a></p>-->
-<!--  <p><a href="{{ pdf_url }}" download="{{ filename }}">⬇️ Download PDF</a></p>-->
-<!--{% endif %}-->
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,26 +13,36 @@
         <div style="width: 40px;"></div>
     </header>
     <div class="controls">
+<!--        <div class="group">-->
+<!--            <img class="logo" src="/static/logo.png" alt="Logo">-->
+<!--        </div>-->
         <div class="group">
             <h3>Body measurements</h3>
             <table>
-                <tr><td>Height</td><td>VP</td><td><input type="text" id="vp"></td></tr>
-                <tr><td>Chest</td><td>OH</td><td><input type="text" id="oh"></td></tr>
-                <tr><td>Waist</td><td>OP</td><td><input type="text" id="op"></td></tr>
-                <tr><td>Hips</td><td>OS</td><td><input type="text" id="os"></td></tr>
-                <tr><td>Back length</td><td>DZ</td><td><input type="text" id="dz"></td></tr>
-                <tr><td>Hip length</td><td>DB</td><td><input type="text" id="db"></td></tr>
+                <tr><td>Height</td><td>VP</td><td><input type="number" id="VP" value=25></td><td>cm</td></tr>
+                <tr><td>Chest</td><td>OH</td><td><input type="number" id="OH"></td><td>cm</td></tr>
+                <tr><td>Waist</td><td>OP</td><td><input type="number" id="OP" value=98></td><td>cm</td></tr>
+                <tr><td>Hips</td><td>OS</td><td><input type="number" id="OS" value=116></td><td>cm</td></tr>
+                <tr><td>Back length</td><td>DZ</td><td><input type="number" id="DZ"></td><td>cm</td></tr>
+                <tr><td>Hip length</td><td>DB</td><td><input type="number" id="DB"></td><td>cm</td></tr>
             </table>
         </div>
         <div class="group">
             <h3>Legs measurements</h3>
             <table>
-                <tr><td>Side length</td><td>BDK</td><td><input type="text" id="bdk"></td></tr>
-                <tr><td>Crotch length</td><td>KD</td><td><input type="text" id="kd"></td></tr>
-                <tr><td>Thigh</td><td>OST</td><td><input type="text" id="ost"></td></tr>
-                <tr><td>Above knee</td><td>ONK</td><td><input type="text" id="onk"></td></tr>
-                <tr><td>Calf</td><td>UL</td><td><input type="text" id="ul"></td></tr>
-                <tr><td>Ankle</td><td>OK</td><td><input type="text" id="ok"></td></tr>
+                <tr><td>Side length</td><td>BDK</td><td><input type="number" id="BDK" value=122></td><td>cm</td></tr>
+                <tr><td>Crotch length</td><td>KD</td><td><input type="number" id="KD" value=90></td><td>cm</td></tr>
+                <tr><td>Thigh</td><td>OST</td><td><input type="number" id="O_st" value=61></td><td>cm</td></tr>
+                <tr><td>Above knee</td><td>ONK</td><td><input type="number" id="O_nk" value=46></td><td>cm</td></tr>
+                <tr><td>Calf</td><td>OL</td><td><input type="number" id="O_l" value=40></td><td>cm</td></tr>
+                <tr><td>Ankle</td><td>OK</td><td><input type="number" id="O_kot" value=26></td><td>cm</td></tr>
+            </table>
+        </div>
+        <div class="group">
+            <h3>Pattern notes</h3>
+            <table>
+                <tr><td>Title</td></tr>
+                <tr><td><textarea class="notes" id="title" rows="5">Test pattern</textarea></td></tr>
             </table>
         </div>
     </div>
@@ -83,6 +75,10 @@
             </table>
         </div>
         <div id="view" class="view"></div>
+<!--        <div class="svg-display-wrapper">-->
+<!--            <h3>Generated Pattern</h3>-->
+<!--            <div id="view" class="svg-interactive-container"></div>-->
+<!--        </div>-->
         <div class="sliders">
             <table>
                 <tr><td>Foot shape</td>
@@ -105,14 +101,6 @@
                 </tr>
 
             </table>
-<!--            <label>Foot shape-->
-<!--                <input type="range" id="slider3" min="0" max="4">-->
-<!--                <span id="slider3_val">0</span>-->
-<!--            </label>-->
-<!--            <label>Corner shape-->
-<!--                <input type="range" id="slider4" min="0" max="30">-->
-<!--                <span id="slider4_val">0</span>-->
-<!--            </label>-->
         </div>
     </div>
     <div class="buttons">
@@ -124,7 +112,7 @@
         <a href="https://facebook.com/patterncreator" target="_blank">Facebook</a> |
         <a href="https://instagram.com/patterncreator" target="_blank">Instagram</a>
     </footer>
-    <script src="static/basic_script.js">
-    </script>
+<!--    <script src="https://unpkg.com/svg-pan-zoom/dist/svg-pan-zoom.min.js"></script>-->
+    <script src="static/basic_script.js"></script>
 </body>
 </html>

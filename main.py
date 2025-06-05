@@ -87,14 +87,14 @@ def gen_back_body():
     p.save_png()
 
 
-def gen_hosen_svg_string(a, b, c, d):
+def gen_hosen_svg_string(meas_file, a, b, c, d):
     my_paper = (120, 160)
 
     svg_scale = 4
     s = svg.SVGCreator(my_paper[0] * svg_scale, my_paper[1] * svg_scale)
 
     m = hosen.LowerMeasurements()
-    m.load_from_json("server_data/meas_test01.json")
+    m.load_from_json(meas_file)
     # m.save_to_json("meas_test01.json")
 
     position_x = 120 * 0.5
