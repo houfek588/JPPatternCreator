@@ -5,10 +5,10 @@ import geometry.skeleton as skel
 import geometry.hosen as hosen
 import output.create_svg as svg
 import data.manage as mn
-
+import output.gen_hosen_files as file_gen
 from reportlab.lib.units import mm, cm
-import reportlab.lib.pagesizes as paper
-from geometry.base import CatmullRomSpline, Bezier
+import interface.server as srv
+
 # === PDF Export ===
 # === Pattern Generation ===
 import json
@@ -21,15 +21,6 @@ import matplotlib.pyplot as plt
 # Group curves and segments into “pattern pieces” for layout
 # Add a simple GUI later with Tkinter, PyQt, or Streamlit
 # Save a DXF/SVG version using libraries like ezdxf or svgwrite for digital cutters
-
-# === Measurements ===
-MEASUREMENTS = {
-    "bust": 100,
-    "waist": 70,
-    "hip": 94,
-    "height": 165
-}
-# === Utility Functions ===
 
 def gen_back_body():
     # file = "test_outputs/test01.pdf"
@@ -87,161 +78,23 @@ def gen_back_body():
     p.save_png()
 
 
-def gen_hosen_svg_string(meas_file, a, b, c, d):
-    my_paper = (120, 160)
-
-    svg_scale = 4
-    s = svg.SVGCreator(my_paper[0] * svg_scale, my_paper[1] * svg_scale)
-
-    m = hosen.LowerMeasurements()
-    m.load_from_json(meas_file)
-    # m.save_to_json("meas_test01.json")
-
-    position_x = 120 * 0.5
-    position_y = 8
-
-    # back part pattern
-    sk = hosen.HosenPattern(position_x, position_y, m)
-    sk_par = hosen.HosenPatternParameter(a, b, c, d)
-
-    lines = sk.get_skeleton_lines()
-    points = sk.get_pattern_points(sk_par)
-
-    s.add_lines(mn.scale_lines(lines, svg_scale).values())
-    s.add_curve_by_points(mn.scale_points(points, svg_scale))
-
-    return s.to_string()
-
-    # load = mn.LoadLinesFromJson("test_outputs/json_test03.json")
-    # # print(load.get_lines())
-    # print(f"hip line: {lines['hip'].get_edge_points()}")
-    # print(f"new line: {new['hip'].get_edge_points()}")
-
-def save_hosen_to_pdf(a, b, c, d):
-    my_paper = (120, 160)
-    p = pdf.MakePdf("server_data/server_test03.pdf", landscape=False, paper_size=mn.scale_one_point(my_paper, cm))
-
-    m = hosen.LowerMeasurements()
-    m.load_from_json("server_data/meas_test01.json")
-    m.save_to_json("server_data/meas_test01.json")
-
-    position_x = my_paper[0] * 0.5
-    position_y = 8
-
-    # back part pattern
-    sk = hosen.HosenPattern(position_x, position_y, m)
-    sk_par = hosen.HosenPatternParameter(a, b, c, d)
-
-    lines = sk.get_skeleton_lines()
-    points = sk.get_pattern_points(sk_par)
-    new = mn.scale_lines(lines, cm)
-    new_points = mn.scale_points(points, cm)
-
-    p.add_lines(new.values())
-    p.add_curve_by_points(new_points, line_width=3)
-
-
-    main_description = sk.get_main_description()
-    x, y, text = main_description.get_text(cm)
-    p.add_text(x, y, text, font_size=32)
-
-    line_descriptions = sk.get_lines_description()
-    for d in line_descriptions:
-        x, y, text = d.get_text(cm)
-        p.add_text(x, y, text, font_size=26)
-
-    marks = sk.get_important_points()
-    for m in marks:
-        p.add_mark(mn.scale_one_point(m, cm), 15)
-
-    p.save_pdf()
-
-    js = mn.SaveLinesToJson(lines)
-    js.save("server_data/json_test03.json")
-
-
 def gen_hosen():
-    my_paper = (120, 160)
-    p = pdf.MakePdf("test_outputs/test03.pdf", landscape=False, paper_size=mn.scale_one_point(my_paper,cm))
-
-    svg_scale = 10
-    s = svg.SVGCreator(my_paper[0] * svg_scale, my_paper[1] * svg_scale)
-    print(f"my_paper: {my_paper}")
-    # print(paper.A1)
-    # print(skel.pt_to_cm(paper.A1[0]))
-    # print(skel.pt_to_cm(paper.A1[1]))
-
-
-
-    m = hosen.LowerMeasurements()
-
-
-    m.load_from_json("meas_test01.json")
-
-    print("GET ALL MEASUREMENTS")
-    print(m.get_all_measurements(1, "cm"))
-    m.save_to_json("meas_test01.json")
-
-    # position_x = 30
-    # position_y = 8
-    position_x = 120 * 0.5
-    position_y = 8
-
-    # back part pattern
-    sk = hosen.HosenPattern(position_x, position_y, m)
-    sk_par = hosen.HosenPatternParameter()
-
-    lines = sk.get_skeleton_lines()
-    points = sk.get_pattern_points(sk_par)
-    new = mn.scale_lines(lines, cm)
-    new_points = mn.scale_points(points, cm)
-
-    p.add_lines(new.values())
-    p.add_curve_by_points(new_points, line_width=3)
-    s.add_lines(mn.scale_lines(lines, svg_scale).values())
-    s.add_curve_by_points(mn.scale_points(points, svg_scale))
-
-
-    main_description = sk.get_main_description()
-    x, y, text = main_description.get_text(cm)
-    p.add_text(x, y, text, font_size=32)
-
-    line_descriptions = sk.get_lines_description()
-    for d in line_descriptions:
-        # pos = mn.scale_one_point((d[0], d[1]), cm)
-        x, y, text = d.get_text(cm)
-        p.add_text(x, y, text, font_size=26)
-
-    marks = sk.get_important_points()
-    for m in marks:
-        p.add_mark(mn.scale_one_point(m, cm), 15)
-
-    p.save_pdf()
-
-    s.save("test_outputs/svg_test03.svg")
-
-    js = mn.SaveLinesToJson(lines)
-    js.save("test_outputs/json_test03.json")
-
-    # load = mn.LoadLinesFromJson("test_outputs/json_test03.json")
-    # # print(load.get_lines())
-    # print(f"hip line: {lines['hip'].get_edge_points()}")
-    # print(f"new line: {new['hip'].get_edge_points()}")
+    file_gen.gen_hosen_svg_string()
+    file_gen.save_hosen_to_pdf("test_outputs/test03.pdf")
+    # s.save("test_outputs/svg_test03.svg")
 
 
 def gener(file, OH, OP, DZ, Szad):
 
     # gen_back_body()
     gen_hosen()
+
     return file
 
 # create directly pdf
 if __name__ == "__main__":
-    OH = 100
-    OP = 80
-    DZ = 40
-    Szad = 42
-    file = "test_outputs/test01.pdf"
 
-    gener(file, OH, OP, DZ, Szad)
-    print("FILE GENERATED")
+
+    # gener(file, OH, OP, DZ, Szad)
+    print("starting server...")
+    srv.start_server()

@@ -108,10 +108,13 @@ class MakePdf:
                 Save the PDF and convert its first page to a PNG.
                 """
         self.save_pdf()
-        images = convert_from_path(self.file_name, dpi=300)
+        images = convert_from_path(self.file_name, dpi=150)
 
         base_name, _ = os.path.splitext(self.file_name)
         png_name = f"{base_name}.png"
+
+        print(f"self.file_name: {self.file_name}")
+        print(f"png_name: {png_name}")
 
         images[0].save(png_name, "PNG")
         print(f"PNG saved to: {png_name}")

@@ -92,11 +92,12 @@ function exportPDF() {
 
 
 function exportPNG() {
+            const { sliders, inputs } = getValues();
             const svg = document.getElementById('view').innerHTML;
             fetch('/export/png', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ svg })
+                body: JSON.stringify({ svg, sliders, inputs })
             })
             .then(res => res.blob())
             .then(blob => {
