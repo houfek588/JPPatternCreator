@@ -9,7 +9,7 @@
 <body>
     <header>
         <img src="/static/logo.png" alt="Logo">
-        <div class="title">Pattern Creator Application</div>
+        <div class="title">Hose Pattern Creator Application</div>
         <div style="width: 40px;"></div>
     </header>
     <div class="controls">
@@ -19,12 +19,12 @@
         <div class="group">
             <h3>Body measurements</h3>
             <table>
-                <tr><td>Height</td><td>VP</td><td><input type="number" id="VP" value=25></td><td>cm</td></tr>
-                <tr><td>Chest</td><td>OH</td><td><input type="number" id="OH"></td><td>cm</td></tr>
+                <tr><td>Height</td><td>VP</td><td><input type="number" id="VP" value=175></td><td>cm</td></tr>
+<!--                <tr><td>Chest</td><td>OH</td><td><input type="number" id="OH"></td><td>cm</td></tr>-->
                 <tr><td>Waist</td><td>OP</td><td><input type="number" id="OP" value=98></td><td>cm</td></tr>
                 <tr><td>Hips</td><td>OS</td><td><input type="number" id="OS" value=116></td><td>cm</td></tr>
-                <tr><td>Back length</td><td>DZ</td><td><input type="number" id="DZ"></td><td>cm</td></tr>
-                <tr><td>Hip length</td><td>DB</td><td><input type="number" id="DB"></td><td>cm</td></tr>
+<!--                <tr><td>Back length</td><td>DZ</td><td><input type="number" id="DZ"></td><td>cm</td></tr>-->
+<!--                <tr><td>Hip length</td><td>DB</td><td><input type="number" id="DB"></td><td>cm</td></tr>-->
             </table>
         </div>
         <div class="group">
@@ -32,10 +32,10 @@
             <table>
                 <tr><td>Side length</td><td>BDK</td><td><input type="number" id="BDK" value=122></td><td>cm</td></tr>
                 <tr><td>Crotch length</td><td>KD</td><td><input type="number" id="KD" value=90></td><td>cm</td></tr>
-                <tr><td>Thigh</td><td>OST</td><td><input type="number" id="O_st" value=61></td><td>cm</td></tr>
-                <tr><td>Above knee</td><td>ONK</td><td><input type="number" id="O_nk" value=46></td><td>cm</td></tr>
-                <tr><td>Calf</td><td>OL</td><td><input type="number" id="O_l" value=40></td><td>cm</td></tr>
-                <tr><td>Ankle</td><td>OK</td><td><input type="number" id="O_kot" value=26></td><td>cm</td></tr>
+                <tr><td>Thigh c.</td><td>OST</td><td><input type="number" id="O_st" value=61></td><td>cm</td></tr>
+                <tr><td>Above knee c.</td><td>ONK</td><td><input type="number" id="O_nk" value=46></td><td>cm</td></tr>
+                <tr><td>Calf c.</td><td>OL</td><td><input type="number" id="O_l" value=40></td><td>cm</td></tr>
+                <tr><td>Ankle c.</td><td>OK</td><td><input type="number" id="O_kot" value=26></td><td>cm</td></tr>
             </table>
         </div>
         <div class="group">
@@ -62,11 +62,38 @@
                     </td>
                     <td>cm</td>
                 </tr>
-                <tr><td>Instep wide</td>
+                <tr><td>Divide line</td>
                     <td>
                         <label>
-                            <input type="range" id="slider2" min="0" max="24">
-                            <span id="slider2_val">0</span>
+                            <input type="range" id="slider5" min="-10" max="10">
+                            <span id="slider5_val">0</span>
+                        </label>
+                    </td>
+                    <td>cm</td>
+                </tr>
+                <tr><td>Corner shape</td>
+                    <td>
+                        <label>
+                            <input type="range" id="slider4" min="0" max="24">
+                            <span id="slider4_val">0</span>
+                        </label>
+                    </td>
+                    <td>cm</td>
+                </tr>
+                <tr><td>Left offset</td>
+                    <td>
+                        <label>
+                            <input type="range" id="slider6" min="0" max="5" value="0">
+                            <span id="slider6_val">0</span>
+                        </label>
+                    </td>
+                    <td>cm</td>
+                </tr>
+                <tr><td>Right offset</td>
+                    <td>
+                        <label>
+                            <input type="range" id="slider7" min="0" max="5" value="0">
+                            <span id="slider7_val">0</span>
                         </label>
                     </td>
                     <td>cm</td>
@@ -90,11 +117,11 @@
                     </td>
                     <td>cm</td>
                 </tr>
-                <tr><td>Corner shape</td>
+                <tr><td>Instep wide</td>
                     <td>
                         <label>
-                            <input type="range" id="slider4" min="0" max="24">
-                            <span id="slider4_val">0</span>
+                            <input type="range" id="slider2" min="0" max="24">
+                            <span id="slider2_val">0</span>
                         </label>
                     </td>
                     <td>cm</td>

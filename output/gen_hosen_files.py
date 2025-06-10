@@ -6,7 +6,7 @@ import data.manage as mn
 from reportlab.lib.units import cm
 
 
-def gen_hosen_svg_string(meas_file, a, b, c, d):
+def gen_hosen_svg_string(meas_file, a, b, c, d, e, f, g):
     """
     Generate an SVG string representing the back part of hosen pattern based on measurements and parameters.
 
@@ -34,12 +34,14 @@ def gen_hosen_svg_string(meas_file, a, b, c, d):
     origin_y = 8  # cm from top
 
     # Create hosen pattern and parameters
-    pattern = hosen.HosenPattern(origin_x, origin_y, measurements)
-    pattern_param = hosen.HosenPatternParameter(a, b, c, d)
+    parameters = hosen.HosenPatternParameter(a, b, c, d, e, f, g)
+    pattern = hosen.HosenPattern(origin_x, origin_y, measurements, parameters)
 
     # Generate construction lines and seam curve
     skeleton_lines = pattern.get_skeleton_lines()
-    seam_points = pattern.get_pattern_points(pattern_param)
+    seam_points = pattern.get_pattern_points()
+
+    pattern.check_thigh()
 
     # Add scaled elements to SVG
     svg_creator.add_lines(mn.scale_lines(skeleton_lines, svg_scale).values())
@@ -49,7 +51,7 @@ def gen_hosen_svg_string(meas_file, a, b, c, d):
     return svg_creator.to_string()
 
 
-def save_hosen_to_pdf(meas_file, a, b, c, d, png=False):
+def save_hosen_to_pdf(meas_file, a, b, c, d, e, f, g, png=False):
     """
     Generates a pattern PDF (or PNG) from measurement data and parameters.
 
@@ -64,7 +66,7 @@ def save_hosen_to_pdf(meas_file, a, b, c, d, png=False):
     paper_pt = mn.scale_one_point(paper_cm, cm)
 
     # Create PDF document
-    p = pdf.MakePdf("server_data/server_test03.pdf", landscape=False, paper_size=paper_pt)
+    p = pdf.MakePdf("interface/server_data/server_test03.pdf", landscape=False, paper_size=paper_pt)
 
     # Load and immediately re-save measurement data
     m = hosen.LowerMeasurements()
@@ -76,12 +78,12 @@ def save_hosen_to_pdf(meas_file, a, b, c, d, png=False):
     position_y = 8
 
     # Create pattern object and parameters
-    pattern = hosen.HosenPattern(position_x, position_y, m)
-    parameters = hosen.HosenPatternParameter(a, b, c, d)
+    parameters = hosen.HosenPatternParameter(a, b, c, d, e, f, g)
+    pattern = hosen.HosenPattern(position_x, position_y, m, parameters)
 
     # Generate geometry: lines and points
     skeleton_lines = pattern.get_skeleton_lines()
-    pattern_points = pattern.get_pattern_points(parameters)
+    pattern_points = pattern.get_pattern_points()
 
     # Scale to points (PDF units)
     scaled_lines = mn.scale_lines(skeleton_lines, cm)
@@ -113,4 +115,4 @@ def save_hosen_to_pdf(meas_file, a, b, c, d, png=False):
 
         # Also export construction data as JSON
         js = mn.SaveLinesToJson(skeleton_lines)
-        js.save("server_data/json_test03.json")
+        js.save("interface/server_data/json_test03.json")

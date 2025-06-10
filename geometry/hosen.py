@@ -31,10 +31,11 @@ class LineFactory:
 
 
 class HosenBaseSkeleton:
-    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
+    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1, divide_line_offset: float = 0):
         self.raw_measurements = measurements
         # self.measurements = self.raw_measurements.get_all_measurements(scale, "pt")
         self.measurements = self.raw_measurements.get_all_measurements(scale, "cm")
+        self.divide_line_offset = divide_line_offset
 
 
 
@@ -78,7 +79,7 @@ class HosenBaseSkeleton:
 
     def corner_divide_line(self):
         hip_height = self.get_hip_line().get_start_point()[1] - self.get_center_line().get_start_point()[1]
-        y_offset = self.measurements["BDK"] - hip_height*0.5
+        y_offset = self.measurements["BDK"] - hip_height*0.5 + self.divide_line_offset
         width = self.measurements["OS"]
         return self.factory.horizontal_line_at(y_offset, width)
 
@@ -120,8 +121,10 @@ class HosenBaseSkeleton:
 
 
 class HosenFrontContour():
-    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
-        self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale)
+    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1, divide_line_offset: float = 0,
+                 left_wide_offset: float = 1):
+        self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale, divide_line_offset)
+        self.left_wide_offset = left_wide_offset
 
     def get_front_line(self):
         hip_x, hip_y = self.base.get_hip_line().get_end_point()
@@ -173,9 +176,9 @@ class HosenFrontContour():
     def get_right_wide(self):
         right_front = self.get_front_side_right(1)
         normal = right_front.normal_line()
-        dist = self.base.measurements["O_st"]/4
-        print(f"dist: {dist}")
-        end_point = normal.get_point_distance(-self.base.measurements["O_st"]/4)
+        dist = self.base.measurements["OS"]/8 + self.left_wide_offset
+        # end_point = normal.get_point_distance(-self.base.measurements["O_st"]/4)
+        end_point = normal.get_point_distance(-dist)
 
         return base.Line(right_front.get_start_point(), end_point)
 
@@ -218,12 +221,14 @@ class HosenFrontContour():
 
 
 class HosenCrotchSkeleton():
-    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
-        self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale)
+    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1, divide_line_offset: float = 0,
+                 right_wide_offset: float = 0):
+        self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale, divide_line_offset)
+        self.right_wide_offset = right_wide_offset
 
     def corner_slope(self):
         hip = self.base.get_hip_line().get_end_point()
-        const = -15
+        const = -5
         x_end = hip[0] - const
         y_end = hip[1] - const
 
@@ -243,7 +248,7 @@ class HosenCrotchSkeleton():
     def slope_wide(self):
         help_line = self.corner_slope()
         help1 = base.Line(self.crotch_back().get_start_point(), vector=help_line.get_vector())
-        dist = self.base.measurements["O_st"]/4 + 3
+        dist = self.base.measurements["OS"]/8 + self.right_wide_offset
         end = help1.get_point_distance(dist)
 
         return base.Line(help_line.get_end_point(), end)
@@ -276,12 +281,23 @@ class HosenCrotchSkeleton():
             "slope_wide": sl_w,
         }
 
+class HosenPatternParameter:
+    def __init__(self, waist_offset: float = 5, instep_width: float = 12, foot_finger_curve: float = 2,
+                 upper_corner_tangent: float = 15, divide_line_offset: float = 0, left_wide_offset: float = 0,
+                 right_wide_offset: float = 0):
+        self.waist_offset = waist_offset
+        self.instep_width = instep_width
+        self.foot_finger_curve = foot_finger_curve
+        self.upper_corner_tangent = upper_corner_tangent
+        self.divide_line_offset = divide_line_offset
+        self.left_wide_offset = left_wide_offset
+        self.right_wide_offset = right_wide_offset
 
 class HosenSkeleton:
-    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
-        self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale)
-        self.front = HosenFrontContour(x_pos, y_pos, measurements, scale)
-        self.crotch = HosenCrotchSkeleton(x_pos, y_pos, measurements, scale)
+    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, param: HosenPatternParameter, scale: float = 1):
+        self.base = HosenBaseSkeleton(x_pos, y_pos, measurements, scale, param.divide_line_offset)
+        self.front = HosenFrontContour(x_pos, y_pos, measurements, scale, param.divide_line_offset, param.left_wide_offset)
+        self.crotch = HosenCrotchSkeleton(x_pos, y_pos, measurements, scale, param.divide_line_offset, param.right_wide_offset)
 
     def get_skeleton_lines(self):
         base = self.base.get_skeleton_lines()
@@ -291,22 +307,34 @@ class HosenSkeleton:
         # Return them organized by name
         return {**base, **front, **crotch}
 
+    def check_thigh(self):
+        lines = self.get_skeleton_lines()
+        line_lenght = 0
+        line_lenght += lines["side_wide"].line_length()
+        line_lenght += lines["hip"].line_length()
 
-class HosenPatternParameter:
-    def __init__(self, waist_offset: float = 5, instep_width: float = 12, foot_finger_curve: float = 2,
-                 upper_corner_tangent: float = 15):
-        self.waist_offset = waist_offset
-        self.instep_width = instep_width
-        self.foot_finger_curve = foot_finger_curve
-        self.upper_corner_tangent = upper_corner_tangent
+        slope = base.Line(lines["hip"].get_end_point(), lines["slope_wide"].get_end_point())
+        line_lenght += slope.line_length()
+
+        print(f"side_wide lenght: {lines['side_wide'].line_length()}")
+        print(f"hip lenght: {lines['hip'].line_length()}")
+        print(f"slope lenght: {slope.line_length()}")
+
+        print(f"line_lenght: {line_lenght}")
+        print(f"thigh: {self.base.measurements['O_st']}")
+        print(f"hip/2: {self.base.measurements['OS']/2}")
+
+
+
 
 
 class HosenPattern(HosenSkeleton):
-    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1):
-        HosenSkeleton.__init__(self, x_pos, y_pos, measurements, scale)
+    def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, param: HosenPatternParameter, scale: float = 1):
+        HosenSkeleton.__init__(self, x_pos, y_pos, measurements, param, scale)
+        self.param = param
         self.lines = self.get_skeleton_lines()
 
-    def get_pattern_points(self, param: HosenPatternParameter) -> list[tuple[float, float]]:
+    def get_pattern_points(self) -> list[tuple[float, float]]:
         """
             Generates a list of 2D points forming the full outline of the garment pattern
             using a combination of Bezier curves and Catmull-Rom splines.
@@ -314,7 +342,7 @@ class HosenPattern(HosenSkeleton):
         points = []
 
         # === 1. Waistline Curve (Upper Edge) ===
-        waist_offset = param.waist_offset
+        waist_offset = self.param.waist_offset
         waist_start = self.lines["waist"].get_start_point()
         waist_control = self.lines["waist"].get_end_point()
         waist_end = self.lines["waist_b"].get_end_point()
@@ -356,7 +384,7 @@ class HosenPattern(HosenSkeleton):
         left_ground = left_tangent.normal_line(left_tangent.get_start_point()[0])
 
         y_offset = self.lines['center'].get_end_point()[1] - self.lines['ankle'].get_start_point()[1]
-        width = param.instep_width
+        width = self.param.instep_width
         foot_line = self.base.factory.horizontal_line_at(y_offset, width)
 
         left_foot = left_tangent.parallel_line_point(foot_line.get_start_point())
@@ -365,7 +393,7 @@ class HosenPattern(HosenSkeleton):
         points.append(foot_line.get_start_point())
 
         # Define smooth foot curve
-        bottom_offset = param.foot_finger_curve
+        bottom_offset = self.param.foot_finger_curve
         contour1 = base.Line(left_intersection, vector=(-1, 1))
         contour1_point = contour1.get_point_distance(-10)
 
@@ -416,7 +444,7 @@ class HosenPattern(HosenSkeleton):
         points.append(right_intersection)
 
         # === 6. Inner Right Curve (Hip to Crotch) ===
-        right_upper_corner_tangent = param.upper_corner_tangent
+        right_upper_corner_tangent = self.param.upper_corner_tangent
         # points.append(right_ground.get_point_distance(-5))
         points.append(right_intersection)
         points += right_curve_pts

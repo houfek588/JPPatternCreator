@@ -3,14 +3,18 @@ function getValues() {
                 slider1: document.getElementById('slider1').value,
                 slider2: document.getElementById('slider2').value,
                 slider3: document.getElementById('slider3').value,
-                slider4: document.getElementById('slider4').value
+                slider4: document.getElementById('slider4').value,
+                slider5: document.getElementById('slider5').value,
+                slider6: document.getElementById('slider6').value,
+                slider7: document.getElementById('slider7').value
             };
 //            const inputs = {};
 //            ['title', 'VP','OH','OP','OS','DZ','DB','BDK','KD','O_st','O_nk','O_l','O_kot'].forEach(id => {
 //                inputs[id] = parseFloat(document.getElementById(id).value);
 //            });
             const inputs = {};
-            ['title', 'VP','OH','OP','OS','DZ','DB','BDK','KD','O_st','O_nk','O_l','O_kot'].forEach(id => {
+//            ['title', 'VP','OH','OP','OS','DZ','DB','BDK','KD','O_st','O_nk','O_l','O_kot'].forEach(id => {
+            ['title', 'VP','OP','OS','BDK','KD','O_st','O_nk','O_l','O_kot'].forEach(id => {
                 const val = document.getElementById(id).value;
                 if (val === "") {
                     inputs[id] = null;
@@ -125,12 +129,12 @@ function saveInputs() {
         }
 
 function updateSliderDisplays() {
-    ['slider1','slider2','slider3','slider4'].forEach(id => {
+    ['slider1','slider2','slider3','slider4','slider5','slider6','slider7'].forEach(id => {
         document.getElementById(`${id}_val`).textContent = document.getElementById(id).value;
     });
 }
 
-['slider1','slider2','slider3','slider4'].forEach(id => {
+['slider1','slider2','slider3','slider4','slider5','slider6','slider7'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('input', () => {
         updateSliderDisplays();

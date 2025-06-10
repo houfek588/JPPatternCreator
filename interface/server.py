@@ -17,14 +17,17 @@ def slider_values_scale(slider_values):
     b = float(slider_values['slider2']) * 1
     c = float(slider_values['slider3']) * 1
     d = float(slider_values['slider4']) * 1
+    e = float(slider_values['slider5']) * 1
+    f = float(slider_values['slider6']) * 1
+    g = float(slider_values['slider7']) * 1
 
-    return (a,b,c,d)
+    return (a,b,c,d,e,f,g)
 
 def generate_svg(slider_values, inputs):
 
-    a, b, c, d = slider_values_scale(slider_values)
+    a, b, c, d, e, f, g = slider_values_scale(slider_values)
 
-    return file_gen.gen_hosen_svg_string("interface/server_data/meas_test02.json", a, b, c, d)
+    return file_gen.gen_hosen_svg_string("interface/server_data/meas_test02.json", a, b, c, d, e, f, g)
     # return f'<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">' \
     #        f'<rect x="{x}" y="{y}" width="{size}" height="{size}" fill="{color}" /></svg>'
 
@@ -50,23 +53,23 @@ def export_pdf():
     sliders = request.json.get("sliders", {})
     # inputs = request.json.get("inputs", {})
 
-    a, b, c, d = slider_values_scale(sliders)
+    a, b, c, d, e, f, g = slider_values_scale(sliders)
 
-    file_gen.save_hosen_to_pdf("interface/server_data/meas_test02.json", a, b, c, d)
+    file_gen.save_hosen_to_pdf("interface/server_data/meas_test02.json", a, b, c, d, e, f, g)
 
     # svg = request.json.get("svg", "")
     print("Export PDF activated")
 
-    return send_file("interface/server_data/server_test03.pdf", mimetype='application/pdf', as_attachment=True)
+    return send_file("server_data/server_test03.pdf", mimetype='application/pdf', as_attachment=True)
 
 @app.route("/export/png", methods=["POST"])
 def export_png():
     sliders = request.json.get("sliders", {})
     # inputs = request.json.get("inputs", {})
 
-    a, b, c, d = slider_values_scale(sliders)
+    a, b, c, d, e, f, g = slider_values_scale(sliders)
 
-    file_gen.save_hosen_to_pdf("interface/server_data/meas_test02.json", a, b, c, d, png=True)
+    file_gen.save_hosen_to_pdf("interface/server_data/meas_test02.json", a, b, c, d, e, f, g, png=True)
     print("Export PNG activated")
     # png_data = cairosvg.svg2png(bytestring=svg.encode("utf-8"))
     # return send_file(io.BytesIO(png_data), mimetype='image/png', as_attachment=True, download_name='pattern.png')
