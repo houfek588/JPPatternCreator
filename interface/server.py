@@ -42,6 +42,8 @@ def generate():
     inputs = request.json.get("inputs", {})
 
     print(f"inputs: {inputs}")
+    # inputs: {'title': 'Test pattern', 'VP': 175, 'OP': 98, 'OS': 116, 'BDK': 122, 'KD': 90, 'O_st': 61, 'O_nk': 46,
+    # 'O_l': 40, 'O_kot': 26}
     m = meas.LowerMeasurements(inputs)
     m.save_to_json("interface/server_data/meas_test02.json")
 
@@ -55,7 +57,8 @@ def export_pdf():
 
     a, b, c, d, e, f, g = slider_values_scale(sliders)
 
-    file_gen.save_hosen_to_pdf("interface/server_data/meas_test02.json", a, b, c, d, e, f, g)
+    file_gen.save_hosen_to_pdf("interface/server_data/meas_test02.json", "interface/server_data/server_test03.pdf",
+                               a, b, c, d, e, f, g)
 
     # svg = request.json.get("svg", "")
     print("Export PDF activated")

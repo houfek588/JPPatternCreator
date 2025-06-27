@@ -51,7 +51,7 @@ def gen_hosen_svg_string(meas_file, a, b, c, d, e, f, g):
     return svg_creator.to_string()
 
 
-def save_hosen_to_pdf(meas_file, a, b, c, d, e, f, g, png=False):
+def save_hosen_to_pdf(meas_file, pdf_file, a, b, c, d, e, f, g, png=False):
     """
     Generates a pattern PDF (or PNG) from measurement data and parameters.
 
@@ -66,7 +66,7 @@ def save_hosen_to_pdf(meas_file, a, b, c, d, e, f, g, png=False):
     paper_pt = mn.scale_one_point(paper_cm, cm)
 
     # Create PDF document
-    p = pdf.MakePdf("interface/server_data/server_test03.pdf", landscape=False, paper_size=paper_pt)
+    p = pdf.MakePdf(pdf_file, landscape=False, paper_size=paper_pt)
 
     # Load and immediately re-save measurement data
     m = hosen.LowerMeasurements()
@@ -115,4 +115,4 @@ def save_hosen_to_pdf(meas_file, a, b, c, d, e, f, g, png=False):
 
         # Also export construction data as JSON
         js = mn.SaveLinesToJson(skeleton_lines)
-        js.save("interface/server_data/json_test03.json")
+        js.save(meas_file)

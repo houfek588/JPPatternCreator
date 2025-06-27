@@ -122,6 +122,7 @@ class LowerMeasurements:
         # for l in self.lines.keys():
         #     unpacked_lines[l] = self._unpack(self.lines[l])
         # print(unpacked_lines)
+        print(f"self.meas: {self.meas}")
         data = json.dumps(self.meas, indent=4)
         with open(filename, "w") as f:
             f.write(data)
