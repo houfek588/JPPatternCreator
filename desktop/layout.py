@@ -7,6 +7,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap, QPalette, QColor
 from PyQt6.QtCore import Qt
 from PyQt6.QtSvgWidgets import QSvgWidget
+from PyQt6.QtCore import QTimer
 import output.gen_hosen_files as file_gen
 import geometry.measurements as meas
 
@@ -14,12 +15,14 @@ class PatternCreatorApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Hosen Pattern Creator")
-        self.resize(1200, 700)
+        self.resize(1200, 900)
 
         self.inputs = {}
         self.sliders = {}
 
-        n = 100
+        self.meas_file = "desktop/meas_Qt01.json"
+
+        n = 175
         self.svg_widget = QSvgWidget()
         self.svg_widget.setStyleSheet("background-color: white;")
         self.svg_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -68,33 +71,22 @@ class PatternCreatorApp(QWidget):
                 """)
 
         self.init_ui()
+        self.generate_svg()
+
+        self.generate_timer = QTimer(self)
+        self.generate_timer.setSingleShot(True)
+        self.generate_timer.timeout.connect(self.generate_svg)
 
     def init_ui(self):
         main_layout = QHBoxLayout()
-
         left_layout = QVBoxLayout()
 
         # Logo
         logo = QLabel()
-        logo.setPixmap(QPixmap("../interface/static/logo.png").scaledToWidth(100, Qt.TransformationMode.SmoothTransformation))
+        logo.setPixmap(QPixmap("interface/static/logo.png").scaledToWidth(100, Qt.TransformationMode.SmoothTransformation))
         left_layout.addWidget(logo, alignment=Qt.AlignmentFlag.AlignCenter)
 
         # Input fields with initial values
-        # form_layout = QGridLayout()
-        # input_labels = ["title", "VP", "OP", "OS", "BDK", "KD", "O_st", "O_nk", "O_l", "O_kot"]
-        # init_values = {
-        #     "title": "Sample Pattern",
-        #     "VP": "175",
-        #     "OP": "98",
-        #     "OS": "116",
-        #     "BDK": "122",
-        #     "KD": "90",
-        #     "O_st": "61",
-        #     "O_nk": "46",
-        #     "O_l": "40",
-        #     "O_kot": "26"
-        # }
-
         form_layout = QGridLayout()
         input_labels = [
             ("title", "Title"), ("VP", "Height"), ("OP", "Waist"),
@@ -108,15 +100,26 @@ class PatternCreatorApp(QWidget):
             "BDK": "122", "KD": "90", "O_st": "61",
             "O_nk": "46", "O_l": "40", "O_kot": "26"
         }
+        init_shortcuts = {
+            "title": " ",
+            "VP": "VP", "OP": "OP", "OS": "OS",
+            "BDK": "BDK", "KD": "KD", "O_st": "OST",
+            "O_nk": "ONK", "O_l": "OL", "O_kot": "OK"
+        }
 
         for i, (key, label_text) in enumerate(input_labels):
             row = i // 2
             col = (i % 2) * 3
             form_layout.addWidget(QLabel(label_text), row, col)
-            form_layout.addWidget(QLabel(key), row, col + 1)
+            form_layout.addWidget(QLabel(init_shortcuts[key]), row, col + 1)
             field = QLineEdit()
             field.setText(init_values.get(key, ""))
+            # self.inputs[key] = field
+            # form_layout.addWidget(field, row, col + 2)
+
             self.inputs[key] = field
+            # field.textChanged.connect(self.generate_svg)
+            field.textChanged.connect(self.schedule_generate_svg)
             form_layout.addWidget(field, row, col + 2)
         # for i, label in enumerate(input_labels):
         #     form_layout.addWidget(QLabel("Waist"), i // 2, (i % 2) * 2)
@@ -129,16 +132,16 @@ class PatternCreatorApp(QWidget):
 
         # Sliders (7 total)
         slider_layout = QHBoxLayout()
-        minima = [0, -10, 0, 0, 0, 0, 0]
-        maxima = [10, 10, 24, 5, 5, 10, 24]
+        minima = [0, -15, 0, -10, -10, 0, 0]
+        maxima = [25, 10, 24, 15, 15, 10, 24]
         slider_init = [5, 0, 12, 0, 0, 5, 12]
-        slider_names = ["Lowering waist",
-                        "Divide line",
-                        "Corner shape",
-                        "Left offset",
-                        "Right offset",
-                        "Foot shape",
-                        "Instep wide"]
+        slider_names = ["Lowering\nwaist",
+                        "Divide\nline",
+                        "Corner\nshape",
+                        "Left\noffset",
+                        "Right\noffset",
+                        "Foot\nshape",
+                        "Instep\nwide"]
 
         for i in range(1, 8):
             vbox = QVBoxLayout()
@@ -189,6 +192,9 @@ class PatternCreatorApp(QWidget):
         self.sliders[f'slider{i}'][2].setText(f"Value: {value}")
         self.generate_svg()
 
+    def schedule_generate_svg(self):
+        self.generate_timer.start(500)
+
     def input_values(self):
         result = {}
         for key, widget in self.inputs.items():
@@ -209,8 +215,8 @@ class PatternCreatorApp(QWidget):
         a, b, c, d, e, f, g = self.slider_values_scale(sliders)
 
         m = meas.LowerMeasurements(inputs)
-        m.save_to_json("meas_Qt01.json")
-        svg_str = file_gen.gen_hosen_svg_string("meas_Qt01.json", a, b, c, d, e, f, g)
+        m.save_to_json(self.meas_file)
+        svg_str = file_gen.gen_hosen_svg_string(self.meas_file, a, b, c, d, e, f, g)
 
         self.svg_widget.load(bytearray(svg_str, encoding='utf-8'))
 
@@ -238,13 +244,23 @@ class PatternCreatorApp(QWidget):
     def export_pdf(self):
         sliders = self.slider_values()
         a, b, c, d, e, f, g = self.slider_values_scale(sliders)
-        filename = "pdf_pattern.pdf"
-        file_gen.save_hosen_to_pdf("meas_Qt01.json", filename, a, b, c, d, e, f, g)
 
-        QMessageBox.information(self, "Exported", f"PDF has been generated and saved to {filename}")
+        path, _ = QFileDialog.getSaveFileName(self, "Save PDF", "pattern.pdf", "PDF Files (*.pdf)")
+        if not path:
+            return
 
-if __name__ == "__main__":
+        file_gen.save_hosen_to_pdf(self.meas_file, path, a, b, c, d, e, f, g, png=False)
+        QMessageBox.information(self, "Exported", f"PDF has been generated and saved to {path}")
+
+def start_window():
     app = QApplication(sys.argv)
     window = PatternCreatorApp()
     window.show()
     sys.exit(app.exec())
+
+if __name__ == "__main__":
+    start_window()
+    # app = QApplication(sys.argv)
+    # window = PatternCreatorApp()
+    # window.show()
+    # sys.exit(app.exec())

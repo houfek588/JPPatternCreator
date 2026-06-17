@@ -324,6 +324,10 @@ class HosenSkeleton:
         print(f"thigh: {self.base.measurements['O_st']}")
         print(f"hip/2: {self.base.measurements['OS']/2}")
 
+        thigh_text = f"thigh {round(self.base.measurements['O_st'],2)} ; line lenght: {round(line_lenght,2)}"
+
+        return [thigh_text]
+
 
 
 

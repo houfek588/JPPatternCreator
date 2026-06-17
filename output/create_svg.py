@@ -48,6 +48,11 @@ class SVGCreator:
         element = f'<path d="{path_data}" style="fill:none;stroke:red;stroke-width:2" />'
         self.elements.append(element)
 
+    def add_text(self, position, text):
+        x, y = position
+        element = f'<text x="{x}" y="{y}" fill="black" text-anchor="middle">{text}</text>'
+        self.elements.append(element)
+
     def save(self, filename="output.svg"):
         """
         Saves the SVG file with current elements.

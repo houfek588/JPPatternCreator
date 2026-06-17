@@ -41,11 +41,17 @@ def gen_hosen_svg_string(meas_file, a, b, c, d, e, f, g):
     skeleton_lines = pattern.get_skeleton_lines()
     seam_points = pattern.get_pattern_points()
 
-    pattern.check_thigh()
+    texts = pattern.check_thigh()
+    test_pos = pattern.get_lines_description()
+    print(f"descr: {test_pos[2].x}")
+    xy = ((test_pos[2].x) * svg_scale, (test_pos[2].y + 5) * svg_scale)
+    print(f"xy: {xy}")
 
     # Add scaled elements to SVG
     svg_creator.add_lines(mn.scale_lines(skeleton_lines, svg_scale).values())
     svg_creator.add_curve_by_points(mn.scale_points(seam_points, svg_scale))
+
+    svg_creator.add_text(xy, texts[0])
 
     # Export SVG as string
     return svg_creator.to_string()

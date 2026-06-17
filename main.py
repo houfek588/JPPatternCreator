@@ -8,6 +8,7 @@ import data.manage as mn
 import output.gen_hosen_files as file_gen
 from reportlab.lib.units import mm, cm
 import interface.server as srv
+import desktop.layout as ly
 
 # === PDF Export ===
 # === Pattern Generation ===
@@ -96,5 +97,10 @@ if __name__ == "__main__":
 
 
     # gener(file, OH, OP, DZ, Szad)
-    print("starting server...")
-    srv.start_server()
+    # print("starting server...")
+    # srv.start_server()
+
+    print("starting window...")
+    ly.start_window()
+
+
