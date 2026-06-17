@@ -8,8 +8,9 @@ from PyQt6.QtGui import QPixmap, QPalette, QColor
 from PyQt6.QtCore import Qt
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtCore import QTimer
-import output.gen_hosen_files as file_gen
+import exporters.gen_hosen_files as file_gen
 import geometry.measurements as meas
+import config
 
 class PatternCreatorApp(QWidget):
     def __init__(self):
@@ -20,7 +21,7 @@ class PatternCreatorApp(QWidget):
         self.inputs = {}
         self.sliders = {}
 
-        self.meas_file = "desktop/meas_Qt01.json"
+        self.meas_file = config.DESKTOP_MEAS_FILE
 
         n = 175
         self.svg_widget = QSvgWidget()
@@ -83,7 +84,7 @@ class PatternCreatorApp(QWidget):
 
         # Logo
         logo = QLabel()
-        logo.setPixmap(QPixmap("interface/static/logo.png").scaledToWidth(100, Qt.TransformationMode.SmoothTransformation))
+        logo.setPixmap(QPixmap(config.LOGO_PATH).scaledToWidth(100, Qt.TransformationMode.SmoothTransformation))
         left_layout.addWidget(logo, alignment=Qt.AlignmentFlag.AlignCenter)
 
         # Input fields with initial values
@@ -214,11 +215,13 @@ class PatternCreatorApp(QWidget):
 
         a, b, c, d, e, f, g = self.slider_values_scale(sliders)
 
-        m = meas.LowerMeasurements(inputs)
-        m.save_to_json(self.meas_file)
-        svg_str = file_gen.gen_hosen_svg_string(self.meas_file, a, b, c, d, e, f, g)
-
-        self.svg_widget.load(bytearray(svg_str, encoding='utf-8'))
+        try:
+            m = meas.LowerMeasurements(inputs)
+            m.save_to_json(self.meas_file)
+            svg_str = file_gen.gen_hosen_svg_string(self.meas_file, a, b, c, d, e, f, g)
+            self.svg_widget.load(bytearray(svg_str, encoding='utf-8'))
+        except meas.ValidationError as err:
+            print(f"Validation Error (SVG drawing skipped): {err}")
 
     def slider_values_scale(self, sliders):
         a = int(sliders['slider1']) * 1
@@ -242,6 +245,13 @@ class PatternCreatorApp(QWidget):
             QMessageBox.information(self, "Saved", f"Data saved to {path}")
 
     def export_pdf(self):
+        try:
+            inputs = self.input_values()
+            m = meas.LowerMeasurements(inputs)
+        except meas.ValidationError as err:
+            QMessageBox.warning(self, "Validation Error", f"Cannot export PDF: {err}")
+            return
+
         sliders = self.slider_values()
         a, b, c, d, e, f, g = self.slider_values_scale(sliders)
 

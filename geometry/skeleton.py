@@ -2,6 +2,7 @@ from reportlab.lib.units import mm, cm
 import geometry.base as base
 import math
 from geometry.measurements import Measurements
+from data.manage import cm_to_pt, pt_to_cm, mm_to_pt
 from typing import Optional
 # import geomdl
 
@@ -13,9 +14,8 @@ from typing import Optional
 
 class BackSkeleton:
     def __init__(self, x_pos, y_pos, measurements: Measurements, scale: float = 1):
-        # self.m = measurements.get_all_measurements(scale, "pt")
         self.measurements = measurements
-        # self.scale = scale
+        self.measurements.validate()
         self.m = self.measurements.get_all_measurements(scale, "pt")
         self.x_pos = cm_to_pt(x_pos)
         self.y_pos = cm_to_pt(y_pos)

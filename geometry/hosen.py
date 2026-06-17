@@ -33,6 +33,7 @@ class LineFactory:
 class HosenBaseSkeleton:
     def __init__(self, x_pos, y_pos, measurements: LowerMeasurements, scale: float = 1, divide_line_offset: float = 0):
         self.raw_measurements = measurements
+        self.raw_measurements.validate()
         # self.measurements = self.raw_measurements.get_all_measurements(scale, "pt")
         self.measurements = self.raw_measurements.get_all_measurements(scale, "cm")
         self.divide_line_offset = divide_line_offset
@@ -502,9 +503,9 @@ class HosenPattern(HosenSkeleton):
         text = "HIP LINE"
         descriptions.append(TextLine(x_center_position, x_pos, text))
 
-        # thight description
+        # thigh description
         x_pos = self.lines["hip"].get_start_point()[1] + y_offset
-        text = "THIGHT LINE"
+        text = "THIGH LINE"
         descriptions.append(TextLine(x_center_position, x_pos, text))
 
         # knee description

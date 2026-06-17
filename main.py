@@ -1,13 +1,13 @@
 import math
 
-import output.create_pdf as pdf
+import exporters.create_pdf as pdf
 import geometry.skeleton as skel
 import geometry.hosen as hosen
-import output.create_svg as svg
+import exporters.create_svg as svg
 import data.manage as mn
-import output.gen_hosen_files as file_gen
+import exporters.gen_hosen_files as file_gen
 from reportlab.lib.units import mm, cm
-import interface.server as srv
+import web.server as srv
 import desktop.layout as ly
 
 # === PDF Export ===
