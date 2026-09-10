@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3143231d-ff65-4154-8ea4-d21006d291c9" name="Changes" comment="refactor(Web): app design">
+      <change afterPath="$PROJECT_DIR$/app/web/readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/data/manage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop/layout.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/desktop/layout.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/geometry/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/geometry/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/geometry/hosen.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/geometry/hosen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/geometry/measurements.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/geometry/measurements.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/geometry/skeleton.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/geometry/skeleton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/readme.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2vVHoXHukROx13QyCgte5mkKzzm" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.server.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Projects/Pattern/JPPatternCreator&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Projects\Pattern\JPPatternCreator" />
+      <recent name="C:\Projects\Pattern\JPPatternCreator\interface" />
+      <recent name="C:\Projects\Pattern\JPPatternCreator\interface\static" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Projects\Pattern\JPPatternCreator\app" />
+      <recent name="C:\Projects\Pattern\JPPatternCreator\desktop" />
+      <recent name="C:\Projects\Pattern\JPPatternCreator\interface\server_data" />
+      <recent name="C:\Projects\Pattern\JPPatternCreator\interface\static" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="base" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="JPPatternCreator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/geometry" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/geometry/base.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="layout" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="JPPatternCreator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/desktop" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/desktop/layout.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="JPPatternCreator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="JPPatternCreator" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web/server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.base" />
+      <item itemvalue="Python.layout" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.server" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.server" />
+        <item itemvalue="Python.layout" />
+        <item itemvalue="Python.base" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3143231d-ff65-4154-8ea4-d21006d291c9" name="Changes" comment="" />
+      <created>1744223496371</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1744223496371</updated>
+    </task>
+    <task id="LOCAL-00001" summary="init commit">
+      <option name="closed" value="true" />
+      <created>1744223758641</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1744223758641</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat(Back): draw basic skeleton of upper back pattern">
+      <option name="closed" value="true" />
+      <created>1744229796355</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744229796355</updated>
+    </task>
+    <task id="LOCAL-00003" summary="enhanc(Back): draw basic skeleton of upper back pattern">
+      <option name="closed" value="true" />
+      <created>1744266226818</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744266226818</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat(Server): add basic server">
+      <option name="closed" value="true" />
+      <created>1744636217159</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744636217159</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat(Geom): add elementary geometric objects">
+      <option name="closed" value="true" />
+      <created>1746624615813</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1746624615813</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat(Pattern): add back pattern generation">
+      <option name="closed" value="true" />
+      <created>1747145502626</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747145502626</updated>
+    </task>
+    <task id="LOCAL-00007" summary="refactor(Pdf): MakePdf code">
+      <option name="closed" value="true" />
+      <created>1747212632574</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1747212632574</updated>
+    </task>
+    <task id="LOCAL-00008" summary="refactor(Pdf): BackPattern and BackContour code">
+      <option name="closed" value="true" />
+      <created>1747216042152</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1747216042152</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat(Skeleton): add hosen skeleton">
+      <option name="closed" value="true" />
+      <created>1747229414516</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1747229414516</updated>
+    </task>
+    <task id="LOCAL-00010" summary="refactor(skeleton): hosen skeleton to more classes">
+      <option name="closed" value="true" />
+      <created>1747317018082</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1747317018082</updated>
+    </task>
+    <task id="LOCAL-00011" summary="enhanc(Visu): different layout">
+      <option name="closed" value="true" />
+      <created>1747834939391</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1747834939391</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat(Output): add svg generator">
+      <option name="closed" value="true" />
+      <created>1747920531232</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1747920531232</updated>
+    </task>
+    <task id="LOCAL-00013" summary="enhanc(Hosen): calculation in cm">
+      <option name="closed" value="true" />
+      <created>1747923892823</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1747923892823</updated>
+    </task>
+    <task id="LOCAL-00014" summary="enhanc(Hosen): basic pattern generation">
+      <option name="closed" value="true" />
+      <created>1747990085703</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1747990085703</updated>
+    </task>
+    <task id="LOCAL-00015" summary="enhanc(Hosen): add foot contour">
+      <option name="closed" value="true" />
+      <created>1748963443214</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1748963443214</updated>
+    </task>
+    <task id="LOCAL-00016" summary="enhanc(Hosen): hosen contour and description">
+      <option name="closed" value="true" />
+      <created>1749118586005</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1749118586005</updated>
+    </task>
+    <task id="LOCAL-00017" summary="enhanc(Web): design and svg generation">
+      <option name="closed" value="true" />
+      <created>1749128691805</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1749128691805</updated>
+    </task>
+    <task id="LOCAL-00018" summary="refactor(Server): generation function">
+      <option name="closed" value="true" />
+      <created>1749130768110</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1749130768110</updated>
+    </task>
+    <task id="LOCAL-00019" summary="enhanc(Hosen): add sliders for shape edit">
+      <option name="closed" value="true" />
+      <created>1749545225377</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1749545225377</updated>
+    </task>
+    <task id="LOCAL-00020" summary="feat(Desktop): basic of desktop app">
+      <option name="closed" value="true" />
+      <created>1751026246719</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1751026246719</updated>
+    </task>
+    <task id="LOCAL-00021" summary="enhanc(Desktop): app for hosen creation">
+      <option name="closed" value="true" />
+      <created>1781697069697</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1781697069698</updated>
+    </task>
+    <task id="LOCAL-00022" summary="refactor(Web): app design">
+      <option name="closed" value="true" />
+      <created>1781701601740</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1781701601740</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init commit" />
+    <MESSAGE value="feat(Back): draw basic skeleton of upper back pattern" />
+    <MESSAGE value="enhanc(Back): draw basic skeleton of upper back pattern" />
+    <MESSAGE value="feat(Server): add basic server" />
+    <MESSAGE value="feat(Geom): add elementary geometric objects" />
+    <MESSAGE value="feat(Pattern): add back pattern generation" />
+    <MESSAGE value="refactor(Pdf): MakePdf code" />
+    <MESSAGE value="refactor(Pdf): BackPattern and BackContour code" />
+    <MESSAGE value="feat(Skeleton): add hosen skeleton" />
+    <MESSAGE value="refactor(skeleton): hosen skeleton to more classes" />
+    <MESSAGE value="enhanc(Visu): different layout" />
+    <MESSAGE value="feat(Output): add svg generator" />
+    <MESSAGE value="enhanc(Hosen): calculation in cm" />
+    <MESSAGE value="enhanc(Hosen): basic pattern generation" />
+    <MESSAGE value="enhanc(Hosen): add foot contour" />
+    <MESSAGE value="enhanc(Hosen): hosen contour and description" />
+    <MESSAGE value="enhanc(Web): design and svg generation" />
+    <MESSAGE value="refactor(Server): generation function" />
+    <MESSAGE value="enhanc(Hosen): add sliders for shape edit" />
+    <MESSAGE value="feat(Desktop): basic of desktop app" />
+    <MESSAGE value="enhanc(Desktop): app for hosen creation" />
+    <MESSAGE value="refactor(Web): app design" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(Web): app design" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/interface/server.py</url>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

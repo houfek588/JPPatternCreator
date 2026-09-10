@@ -1,0 +1,228 @@
+export const TRANSLATIONS = {
+  EN: {
+    // Navigation
+    navStudio: "CAD Studio",
+    navCatalog: "Garment Catalog",
+    navProfiles: "Client Profiles",
+    navGuide: "Measurement Guide",
+    activeProfile: "Active Profile",
+    noActiveProfile: "No profile loaded",
+    themeLight: "Light Mode",
+    themeDark: "Dark Mode",
+    privacyBadge: "100% Stateless & Private",
+
+    // Catalog
+    catalogTitle: "15th Century Historical Garments",
+    catalogSubtitle: "Select an anatomically drafted garment archetype to begin customizing in the CAD Studio.",
+    openInStudio: "Open in CAD Studio",
+    historicalPeriod: "Late Middle Ages • 15th Century",
+    garmentHosenTitle: "Chausses / Hosen (Nohavice)",
+    garmentHosenDesc: "Fitted woolen hose with anatomical leg shaping, crotch gusset, contoured instep and crakow / foot options.",
+    garmentHosenVariants: ["Joined Hosen", "Split Hosen", "Pointed Foot", "Stirrup Sole"],
+    garmentBodiceTitle: "Doublet / Pourpoint (Kabátec)",
+    garmentBodiceDesc: "Close-fitting torso garment with deep back cut, curved elbow sleeve, high collar and waist points to support hosen.",
+    garmentBodiceVariants: ["Standing Collar", "Front Buttoning", "Laced Closure", "Waist Peplum"],
+    garmentShirtTitle: "Under-linen Shirt (Košile)",
+    garmentShirtDesc: "Fine bleached linen undergarment providing comfort and protection under the doublet.",
+    garmentShirtComingSoon: "Template in preparation",
+
+    // CAD Studio Accordion Steps
+    step1Variant: "1. Garment Variant & Type",
+    step2Measurements: "2. Body Measurements (cm)",
+    step3Sliders: "3. Shape Modifiers",
+    step4CadOptions: "4. Tailoring CAD Options",
+
+    // Inputs
+    input_title: "Pattern Name",
+    input_VP: "Total Body Height (VP)",
+    input_OP: "Waist Circumference (OP)",
+    input_OS: "Hips Circumference (OS)",
+    input_BDK: "Outer Leg Length (BDK)",
+    input_KD: "Inseam / Crotch Length (KD)",
+    input_O_st: "Thigh Circumference (Ost)",
+    input_O_nk: "Above Knee Circumference (Onk)",
+    input_O_l: "Calf Circumference (Ol)",
+    input_O_kot: "Ankle Circumference (Ok)",
+    input_OH: "Chest Circumference (OH)",
+    input_DZ: "Back Length (DZ)",
+    input_Szad: "Back Width (Szad)",
+
+    // Sliders
+    slider_slider1_hosen: "Lowering waist",
+    slider_slider5_hosen: "Divide line",
+    slider_slider4_hosen: "Corner shape",
+    slider_slider6_hosen: "Left offset",
+    slider_slider7_hosen: "Right offset",
+    slider_slider3_hosen: "Foot shape",
+    slider_slider2_hosen: "Instep wide",
+    slider_slider1_bodice: "Collar depth",
+
+    // CAD Options
+    seamAllowanceTitle: "Seam Allowances",
+    seamAllowanceDesc: "Add outer cut offset border for sewing",
+    seamAllowanceWidth: "Allowance width",
+    grainlineTitle: "Grainline Arrows",
+    grainlineDesc: "Display warp alignment markers on pattern pieces",
+    doubletPointsTitle: "Lacing Eyelets / Points",
+    doubletPointsDesc: "Mark paired reinforced holes for doublet lacing",
+
+    // Parts & Canvas
+    partAll: "All Pieces (Nested)",
+    partFront: "Front Leg Piece",
+    partBack: "Back Piece",
+    partCollar: "Collar Strip",
+    partMain: "Main Body",
+    partCrotch: "Crotch Gusset",
+    drafting: "Calculating...",
+    zoomIn: "Zoom In",
+    zoomOut: "Zoom Out",
+    zoomReset: "Fit View",
+    zoom100: "100% Scale",
+    validationErrorPrefix: "Measurement",
+    validationErrorPositive: "must be a positive number.",
+
+    // Export Dropdown
+    exportBtn: "Export Pattern",
+    exportOptionsTitle: "Available Export Formats",
+    exportPdfOption: "Plotter PDF (1:1 Scale)",
+    exportPdfDesc: "Full-scale continuous print for wide rolls",
+    exportPngOption: "High-Res PNG Image",
+    exportPngDesc: "150 DPI raster image for print & preview",
+    exportSvgOption: "Vector SVG File",
+    exportSvgDesc: "Layered vectors for CAD, Inkscape & laser cutters",
+
+    // Profile Manager
+    profilesTitle: "Client Profile Studio",
+    profilesSubtitle: "Manage your atelier customers locally. Data never leaves this browser.",
+    newProfileTitle: "Save New Profile",
+    profileNamePlaceholder: "Customer name (e.g. John Doe - Knight)",
+    btnSaveProfile: "Save Profile",
+    clientListTitle: "Saved Client Database",
+    noClientsYet: "No client profiles saved yet. Fill in measurements in the CAD Studio and save them here.",
+    btnExportAll: "Backup All Profiles (.json)",
+    btnImportJson: "Import Profiles (.json)",
+    dropzoneTitle: "Drop JSON profile here or click to browse",
+    btnLoadInStudio: "Load in CAD Studio",
+    btnDeleteProfile: "Delete Profile",
+    confirmDelete: "Are you sure you want to delete this profile?",
+
+    // Measurement Guide
+    guideTitle: "Historical Tailoring & Measurement Guide",
+    guideSubtitle: "Master late 15th-century anatomical tailoring measurements and printing techniques.",
+    guideHowToMeasureTitle: "How to Measure for Fitted 15th Century Garments",
+    guidePrintingTitle: "Plotter vs. Tiled Printing Assembly"
+  },
+  CZ: {
+    // Navigation
+    navStudio: "CAD Studio",
+    navCatalog: "Katalog oděvů",
+    navProfiles: "Profily klientů",
+    navGuide: "Průvodce měřením",
+    activeProfile: "Aktivní profil",
+    noActiveProfile: "Žádný profil nenačten",
+    themeLight: "Světlý režim",
+    themeDark: "Tmavý režim",
+    privacyBadge: "100% soukromé a bezstavové",
+
+    // Catalog
+    catalogTitle: "Historické oděvy 15. století",
+    catalogSubtitle: "Vyberte si anatomický střihový archetyp z pozdního středověku pro úpravu v CAD Studiu.",
+    openInStudio: "Otevřít v CAD Studiu",
+    historicalPeriod: "Pozdní středověk • 15. století",
+    garmentHosenTitle: "Nohavice (Chausses / Hosen)",
+    garmentHosenDesc: "Přiléhavé vlněné nohavice s anatomickým tvarováním sedu, klínem rozkroku, tvarovanou klenbou a volbou šlapky.",
+    garmentHosenVariants: ["Spojené nohavice", "Dělené nohavice", "Špičatá šlapka (crakow)", "Třmínek pod chodidlo"],
+    garmentBodiceTitle: "Kabátec / Pourpoint (Doublet)",
+    garmentBodiceDesc: "Přiléhavý trupový oděv nesoucí váhu nohavic. Tvarovaná zádová linie, zahnutý rukáv, stojáček a vázací dírky v pase.",
+    garmentBodiceVariants: ["Stojáčkový límec", "Knoflíkové zapínání", "Vázání na šňůrky", "Pasové šůsky"],
+    garmentShirtTitle: "Spodní lněná košile",
+    garmentShirtDesc: "Jemné bělené plátno chránící pokožku a drahocenné svrchní oděvy před potem.",
+    garmentShirtComingSoon: "Šablona v přípravě",
+
+    // CAD Studio Accordion Steps
+    step1Variant: "1. Typ a varianta oděvu",
+    step2Measurements: "2. Tělesné rozměry (cm)",
+    step3Sliders: "3. Tvarové parametry (posuvníky)",
+    step4CadOptions: "4. Krejčovské CAD volby",
+
+    // Inputs
+    input_title: "Název střihu",
+    input_VP: "Celková výška postavy (VP)",
+    input_OP: "Obvod pasu (OP)",
+    input_OS: "Obvod sedu / boků (OS)",
+    input_BDK: "Boční délka kalhot (BDK)",
+    input_KD: "Kroková délka (KD)",
+    input_O_st: "Obvod stehna (Ost)",
+    input_O_nk: "Obvod nad kolenem (Onk)",
+    input_O_l: "Obvod lýtka (Ol)",
+    input_O_kot: "Obvod kotníku (Ok)",
+    input_OH: "Obvod hrudníku (OH)",
+    input_DZ: "Délka zad (DZ)",
+    input_Szad: "Šířka zad (Szad)",
+
+    // Sliders
+    slider_slider1_hosen: "Snížení pasu",
+    slider_slider5_hosen: "Dělicí linie",
+    slider_slider4_hosen: "Tvar rozkroku",
+    slider_slider6_hosen: "Levý posun stehna",
+    slider_slider7_hosen: "Pravý posun sedu",
+    slider_slider3_hosen: "Tvar paty / šlapky",
+    slider_slider2_hosen: "Šířka nártu",
+    slider_slider1_bodice: "Hloubka výstřihu límce",
+
+    // CAD Options
+    seamAllowanceTitle: "Švové přídavky",
+    seamAllowanceDesc: "Vykreslit linii řezu s přídavkem pro šití",
+    seamAllowanceWidth: "Šířka přídavku",
+    grainlineTitle: "Směr osnovy (Grainline)",
+    grainlineDesc: "Zobrazit šipky pro správné polohování na látku",
+    doubletPointsTitle: "Vázací dírky (Doublet Points)",
+    doubletPointsDesc: "Vyznačit párové zpevněné dírky pro uchycení nohavic",
+
+    // Parts & Canvas
+    partAll: "Celý střih (všechny díly)",
+    partFront: "Přední díl nohavice",
+    partBack: "Zadní díl",
+    partCollar: "Límec",
+    partMain: "Hlavní dílec",
+    partCrotch: "Klín rozkroku",
+    drafting: "Přepočítávám...",
+    zoomIn: "Přiblížit",
+    zoomOut: "Oddálit",
+    zoomReset: "Přizpůsobit oknu",
+    zoom100: "Měřítko 100%",
+    validationErrorPrefix: "Rozměr",
+    validationErrorPositive: "musí být kladné číslo.",
+
+    // Export Dropdown
+    exportBtn: "Exportovat střih",
+    exportOptionsTitle: "Dostupné formáty exportu",
+    exportPdfOption: "Tiskové PDF (měřítko 1:1)",
+    exportPdfDesc: "Kontinuální tisk pro plotry a role papíru",
+    exportPngOption: "Rastrový obrázek PNG",
+    exportPngDesc: "Vysoké rozlišení 150 DPI pro náhled a tisk",
+    exportSvgOption: "Vektorový formát SVG",
+    exportSvgDesc: "Čisté vrstvené křivky pro CAD, Inkscape i laser",
+
+    // Profile Manager
+    profilesTitle: "Správce zákaznických profilů",
+    profilesSubtitle: "Spravujte své klienty lokálně ve svém ateliéru. Míry neopouštějí tento prohlížeč.",
+    newProfileTitle: "Uložit aktuální profil",
+    profileNamePlaceholder: "Jméno klienta (např. Jan Žižka - Šermíř)",
+    btnSaveProfile: "Uložit profil",
+    clientListTitle: "Databáze uložených zákazníků",
+    noClientsYet: "Zatím nemáte uložené žádné profily. Zadejte míry v CAD Studiu a uložte je zde.",
+    btnExportAll: "Zálohovat celou databázi (.json)",
+    btnImportJson: "Nahrát profily (.json)",
+    dropzoneTitle: "Přetáhněte sem soubor .json s mírami nebo klikněte",
+    btnLoadInStudio: "Otevřít v CAD Studiu",
+    btnDeleteProfile: "Smazat profil",
+    confirmDelete: "Opravdu si přejete smazat tento profil klienta?",
+
+    // Measurement Guide
+    guideTitle: "Průvodce historickým krejčovstvím a měřením",
+    guideSubtitle: "Základní postupy pro přesné změření anatomických měr 15. století a kompletaci střihů.",
+    guideHowToMeasureTitle: "Jak správně brát míry pro těsně přiléhavé oděvy 15. století",
+    guidePrintingTitle: "Plotrový tisk 1:1 vs. dlaždicové lepení A4"
+  }
+};
