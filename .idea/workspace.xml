@@ -4,19 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3143231d-ff65-4154-8ea4-d21006d291c9" name="Changes" comment="enhanc(Web): created CAD studio concept">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/exporters/create_svg.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/exporters/create_svg.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/exporters/gen_hosen_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/exporters/gen_hosen_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/web/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/App.jsx" afterDir="false" />
+    <list default="true" id="3143231d-ff65-4154-8ea4-d21006d291c9" name="Changes" comment="enhanc(Web): add sliders into pattern">
       <change beforePath="$PROJECT_DIR$/app/web/frontend/src/components/CadCanvas.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/components/CadCanvas.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/web/frontend/src/components/CadStudio.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/components/CadStudio.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/web/frontend/src/components/GuideView.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/components/GuideView.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/web/frontend/src/components/MeasurementDiagram.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/components/MeasurementDiagram.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/web/frontend/src/components/ProfileManager.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/components/ProfileManager.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/web/frontend/src/translations.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/frontend/src/translations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/web/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/web/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -391,7 +381,15 @@
       <option name="project" value="LOCAL" />
       <updated>1789036012239</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="enhanc(Web): add sliders into pattern">
+      <option name="closed" value="true" />
+      <created>1789040767788</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1789040767788</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -430,7 +428,8 @@
     <MESSAGE value="refactor(Web): app design" />
     <MESSAGE value="refactor(Web): agent instructions and project structure" />
     <MESSAGE value="enhanc(Web): created CAD studio concept" />
-    <option name="LAST_COMMIT_MESSAGE" value="enhanc(Web): created CAD studio concept" />
+    <MESSAGE value="enhanc(Web): add sliders into pattern" />
+    <option name="LAST_COMMIT_MESSAGE" value="enhanc(Web): add sliders into pattern" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
