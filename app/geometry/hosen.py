@@ -1,13 +1,9 @@
-from reportlab.lib.units import mm, cm
-import geometry.base as base
-from data.manage import cm_to_pt, pt_to_cm
-from geometry.measurements import LowerMeasurements
-from data.manage import TextLine
-import math
-from typing import Optional, Dict, List
+import app.geometry.base as base
+from app.geometry.measurements import LowerMeasurements
+from app.data.manage import TextLine
+from typing import Dict
 from dataclasses import dataclass
 # import geomdl
-import json
 
 
 @dataclass

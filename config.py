@@ -15,13 +15,13 @@ SVG_SCALE = 4
 PATTERN_ORIGIN_Y_CM = 8
 
 # Desktop client settings
-DESKTOP_MEAS_FILE = os.path.join(ROOT_DIR, "desktop", "meas_Qt01.json")
+DESKTOP_MEAS_FILE = os.path.join(ROOT_DIR, "app", "desktop", "meas_Qt01.json")
 
 # Web server settings
 SERVER_SAVE_PATH = os.path.join(ROOT_DIR, "saved_data.json")
-SERVER_MEAS_FILE = os.path.join(ROOT_DIR, "web", "server_data", "meas_test02.json")
-SERVER_PDF_FILE = os.path.join(ROOT_DIR, "web", "server_data", "server_test03.pdf")
-SERVER_PNG_FILE = os.path.join(ROOT_DIR, "web", "server_data", "server_test03.png")
+SERVER_MEAS_FILE = os.path.join(ROOT_DIR, "app", "web", "server_data", "meas_test02.json")
+SERVER_PDF_FILE = os.path.join(ROOT_DIR, "app", "web", "server_data", "server_test03.pdf")
+SERVER_PNG_FILE = os.path.join(ROOT_DIR, "app", "web", "server_data", "server_test03.png")
 
 # Asset paths
-LOGO_PATH = os.path.join(ROOT_DIR, "web", "static", "logo.png")
+LOGO_PATH = os.path.join(ROOT_DIR, "app", "web", "static", "logo.png")

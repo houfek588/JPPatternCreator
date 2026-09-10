@@ -1,6 +1,6 @@
 import json
-from typing import Optional, Dict, List
-import geometry.base as base
+from typing import List
+import app.geometry.base as base
 from reportlab.lib.units import mm, cm
 
 

@@ -1,8 +1,6 @@
-from reportlab.lib.units import mm, cm
-import geometry.base as base
-import math
-from geometry.measurements import Measurements
-from data.manage import cm_to_pt, pt_to_cm, mm_to_pt
+import app.geometry.base as base
+from app.geometry.measurements import Measurements
+from app.data.manage import cm_to_pt, pt_to_cm, mm_to_pt
 from typing import Optional
 # import geomdl
 
@@ -249,7 +247,7 @@ class BackContour(BackSkeleton):
         side = sk["side"].get_start_point()
 
         return base.Line((waist[0] + offset2cm + self.m["OP"] / 4 - offset1cm, waist[1] + offset1cm),
-                  (side[0], chest[1]))
+                         (side[0], chest[1]))
 
 
 class BackPattern(BackContour):

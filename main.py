@@ -1,106 +1,36 @@
-import math
+"""
+JPPatternCreator - Hlavní vstupní bod aplikace.
 
-import exporters.create_pdf as pdf
-import geometry.skeleton as skel
-import geometry.hosen as hosen
-import exporters.create_svg as svg
-import data.manage as mn
-import exporters.gen_hosen_files as file_gen
-from reportlab.lib.units import mm, cm
-import web.server as srv
-import desktop.layout as ly
-
-# === PDF Export ===
-# === Pattern Generation ===
-import json
-from reportlab.pdfgen import canvas
-import reportlab.lib.pagesizes as paper
-from reportlab.lib.units import mm
-import matplotlib.pyplot as plt
-
-# Use reportlab.lib.units for real-world sizing
-# Group curves and segments into “pattern pieces” for layout
-# Add a simple GUI later with Tkinter, PyQt, or Streamlit
-# Save a DXF/SVG version using libraries like ezdxf or svgwrite for digital cutters
-
-def gen_back_body():
-    # file = "test_outputs/test01.pdf"
-    p = pdf.MakePdf(file, landscape=False)
-
-    # OH = 100
-    # OP = 80
-    # DZ = 40
-    # Szad = 42
-    m = skel.Measurements()
-    m.add_chest(OH)
-    m.add_waist(OP)
-    m.add_back_length(DZ)
-    m.add_back_width(Szad)
-    print(m.get_all_measurements(1, "mm"))
-
-    position_x = 3
-    position_y = 8
-
-    # back part pattern
-
-    sk = skel.BackPattern(position_x, position_y, m)
-    collar = sk.generate_collar(12)
-
-    lines = sk.get_skeleton_lines()
-
-    p.add_lines(lines.values())
-
-    points = sk.get_contour()
-    p.add_curve_by_points(points, closed=False)
-
-    p.add_mark(sk.get_armhole_edges()[0], 5)
-    p.add_mark(sk.get_armhole_edges()[1], 5)
-    p.add_curve_by_points(sk.get_pattern_points(collar=True, bezier_contour=False), line_width=3, closed=False)
-
-    # collar part pattern
-    # collar1 = skel.CollarPattern(position_x, position_y, m)
-
-    # collar = sk.generate_collar()
-
-    p.add_curve_by_points(collar.get_pattern_points(), line_width=3)
-
-    x_text = (lines["chest"].get_end_point()[0] - lines["chest"].get_start_point()[0]) * 0.35 + \
-             lines["chest"].get_start_point()[0]
-    y_text = lines["chest"].get_start_point()[1] + 20
-    text = ("ZADNÍ DÍL\n"
-            "\n"
-            "TEST PATTERN\n"
-            f"OH {OH}\n"
-            f"OP {OP}\n"
-            f"DZ {DZ}")
-    p.add_text(x_text, y_text, text, font_size=16)
-
-    # p.save_pdf()
-    p.save_png()
+Spouští bezstavový webový server (Flask + React SPA), který představuje
+primární platformu pro generování a export historických oděvních střihů.
+Volitelně umožňuje spustit i desktopové rozhraní pomocí přepínače --desktop.
+"""
+import argparse
+from app.web.server import start_server
 
 
-def gen_hosen():
-    file_gen.gen_hosen_svg_string()
-    file_gen.save_hosen_to_pdf("test_outputs/test03.pdf")
-    # s.save("test_outputs/svg_test03.svg")
+def main():
+    parser = argparse.ArgumentParser(description="JPPatternCreator - Parametrický CAD generátor historických střihů")
+    parser.add_argument(
+        "--desktop",
+        action="store_true",
+        help="Spustit lokální desktopové rozhraní (PyQt6) namísto webového serveru"
+    )
+    parser.add_argument("--host", default="127.0.0.1", help="Hostitel pro webový server (výchozí: 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=5000, help="Port pro webový server (výchozí: 5000)")
+    parser.add_argument("--no-debug", action="store_true", help="Vypnout debug režim serveru")
+
+    args = parser.parse_args()
+
+    if args.desktop:
+        from app.desktop.layout import start_window
+        print("Spouštím desktopové rozhraní (PyQt6)...")
+        start_window()
+    else:
+        print(f"Spouštím webový server na http://{args.host}:{args.port}")
+        print("Pro ukončení stiskněte CTRL+C")
+        start_server(host=args.host, port=args.port, debug=not args.no_debug)
 
 
-def gener(file, OH, OP, DZ, Szad):
-
-    # gen_back_body()
-    gen_hosen()
-
-    return file
-
-# create directly pdf
 if __name__ == "__main__":
-
-
-    # gener(file, OH, OP, DZ, Szad)
-    # print("starting server...")
-    # srv.start_server()
-
-    print("starting window...")
-    ly.start_window()
-
-
+    main()

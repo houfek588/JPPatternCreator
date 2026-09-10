@@ -62,8 +62,12 @@ class Measurements:
 
         conversion_factor = unit_map[unit]
 
-        # Optional: return a new dictionary instead of modifying in place
-        scaled_meas = {key: val * scale * conversion_factor for key, val in self.meas.items()}
+        scaled_meas = {}
+        for key, val in self.meas.items():
+            if isinstance(val, (int, float)):
+                scaled_meas[key] = val * scale * conversion_factor
+            else:
+                scaled_meas[key] = val
 
         return scaled_meas
 
@@ -161,13 +165,12 @@ class LowerMeasurements:
 
         conversion_factor = unit_map[unit]
 
-        # Optional: return a new dictionary instead of modifying in place
         scaled_meas = {}
         for key, val in self.meas.items():
-            if val:
+            if isinstance(val, (int, float)):
                 scaled_meas[key] = val * scale * conversion_factor
-
-        # scaled_meas = {key: val * scale * conversion_factor for key, val in self.meas.items()}
+            else:
+                scaled_meas[key] = val
 
         return scaled_meas
 

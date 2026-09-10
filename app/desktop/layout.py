@@ -2,14 +2,14 @@ import sys
 import json
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton,
-    QSlider, QLineEdit, QTextEdit, QFileDialog, QMessageBox, QGridLayout, QSizePolicy
+    QSlider, QLineEdit, QFileDialog, QMessageBox, QGridLayout, QSizePolicy
 )
-from PyQt6.QtGui import QPixmap, QPalette, QColor
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtCore import QTimer
-import exporters.gen_hosen_files as file_gen
-import geometry.measurements as meas
+import app.exporters.gen_hosen_files as file_gen
+import app.geometry.measurements as meas
 import config
 
 class PatternCreatorApp(QWidget):
