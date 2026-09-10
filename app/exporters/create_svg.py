@@ -43,7 +43,7 @@ class SVGCreator:
 
     def save(self, filename="output.svg"):
         """Save the SVG content to a file."""
-        svg_header = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
+        svg_header = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {self.width} {self.height}" width="{self.width}" height="{self.height}">'
         svg_content = "\n  ".join(self.elements)
         svg_footer = "</svg>"
         with open(filename, "w", encoding="utf-8") as f:
@@ -51,7 +51,7 @@ class SVGCreator:
 
     def to_string(self):
         """Return the SVG content as an XML string."""
-        svg_header = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
+        svg_header = f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {self.width} {self.height}" width="{self.width}" height="{self.height}">'
         svg_content = "\n  ".join(self.elements)
         svg_footer = "</svg>"
         return f"{svg_header}\n  {svg_content}\n{svg_footer}"

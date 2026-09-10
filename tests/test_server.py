@@ -31,6 +31,8 @@ class TestWebServer(unittest.TestCase):
         data = response.get_json()
         self.assertEqual(data["status"], "success")
         self.assertIn("<svg", data["svg"])
+        self.assertIn("handles", data)
+        self.assertEqual(len(data["handles"]), 7)
 
     def test_generate_bodice(self):
         payload = {
@@ -49,6 +51,8 @@ class TestWebServer(unittest.TestCase):
         data = response.get_json()
         self.assertEqual(data["status"], "success")
         self.assertIn("<svg", data["svg"])
+        self.assertIn("handles", data)
+        self.assertGreaterEqual(len(data["handles"]), 1)
 
     def test_export_pdf(self):
         payload = {

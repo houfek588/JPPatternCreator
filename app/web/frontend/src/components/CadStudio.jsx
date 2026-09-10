@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  ChevronDown, ChevronRight, Layers, Sliders as SliderIcon, 
+  ChevronDown, ChevronRight, Layers, 
   Ruler, Scissors, Download, Printer, Image, FileCode, 
   Loader2, Sparkles, CheckCircle2 
 } from 'lucide-react';
@@ -17,6 +17,7 @@ export default function CadStudio({
   part,
   setPart,
   svgString,
+  handles,
   loading,
   validationError,
   activeProfile,
@@ -28,10 +29,9 @@ export default function CadStudio({
   exportingPdf,
   exportingPng,
   exportingSvg,
-  sliderConfigs,
   inputConfigs
 }) {
-  // Accordion Step State: 'variant' | 'measurements' | 'sliders' | 'cad'
+  // Accordion Step State: 'variant' | 'measurements' | 'cad'
   const [openStep, setOpenStep] = useState('measurements');
   const [activeField, setActiveField] = useState('VP');
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
@@ -58,13 +58,6 @@ export default function CadStudio({
     setInputs(prev => ({
       ...prev,
       [id]: id === 'title' ? val : (val === '' ? '' : parseFloat(val))
-    }));
-  };
-
-  const handleSliderChange = (id, val) => {
-    setSliders(prev => ({
-      ...prev,
-      [id]: parseFloat(val)
     }));
   };
 
@@ -354,51 +347,20 @@ export default function CadStudio({
                     ))}
                   </div>
 
-                </div>
-              )}
-            </div>
-
-            {/* Step 3: Shape Modifiers (Sliders) */}
-            <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all shadow-xs">
-              <button
-                type="button"
-                onClick={() => setOpenStep(openStep === 'sliders' ? '' : 'sliders')}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/60 flex items-center justify-between font-bold text-xs text-slate-800 dark:text-slate-200"
-              >
-                <div className="flex items-center gap-2">
-                  <SliderIcon className="h-4 w-4 text-brand dark:text-brand-light" />
-                  <span>{t.step3Sliders}</span>
-                </div>
-                {openStep === 'sliders' ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
-              </button>
-
-              {openStep === 'sliders' && (
-                <div className="p-4 space-y-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
-                  {sliderConfigs.map(item => (
-                    <div key={item.id} className="space-y-1.5">
-                      <div className="flex justify-between text-xs font-semibold">
-                        <span className="text-slate-600 dark:text-slate-400">
-                          {t[item.labelKey] || item.id}
-                        </span>
-                        <span className="text-brand dark:text-brand-light font-black font-mono">
-                          {sliders[item.id]} {item.unit}
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min={item.min}
-                        max={item.max}
-                        value={sliders[item.id] ?? item.min}
-                        onChange={e => handleSliderChange(item.id, e.target.value)}
-                        className="w-full glass-slider cursor-pointer accent-brand"
-                      />
+                  {/* Interactive CAD Smart Handles Hint */}
+                  <div className="bg-brand/5 dark:bg-brand/10 border border-brand/20 rounded-xl p-3 flex items-start gap-2.5 text-[11px] text-slate-600 dark:text-slate-300">
+                    <Sparkles className="h-4 w-4 text-brand dark:text-brand-light shrink-0 mt-0.5" />
+                    <div className="leading-snug">
+                      <span className="font-extrabold text-slate-800 dark:text-slate-100 block mb-0.5">{t.cadHandlesToggle}</span>
+                      {t.cadHandlesHelp}
                     </div>
-                  ))}
+                  </div>
+
                 </div>
               )}
             </div>
 
-            {/* Step 4: Tailoring CAD Options */}
+            {/* Step 3: Tailoring CAD Options */}
             <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all shadow-xs">
               <button
                 type="button"
@@ -407,7 +369,7 @@ export default function CadStudio({
               >
                 <div className="flex items-center gap-2">
                   <Scissors className="h-4 w-4 text-brand dark:text-brand-light" />
-                  <span>{t.step4CadOptions}</span>
+                  <span>{t.step3CadOptions}</span>
                 </div>
                 {openStep === 'cad' ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
               </button>
@@ -486,9 +448,14 @@ export default function CadStudio({
         {/* Right Canvas: Interactive CAD Viewport */}
         <CadCanvas
           svgString={svgString}
+          handles={handles}
+          sliders={sliders}
+          setSliders={setSliders}
+          patternType={patternType}
           loading={loading}
           validationError={validationError}
           t={t}
+          lang={lang}
         />
 
       </div>

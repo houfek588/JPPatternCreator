@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import GarmentCatalog from './components/GarmentCatalog';
 import CadStudio from './components/CadStudio';
@@ -120,6 +120,7 @@ export default function App() {
 
   // Drafting State
   const [svgString, setSvgString] = useState('');
+  const [handles, setHandles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingPng, setExportingPng] = useState(false);
@@ -127,6 +128,9 @@ export default function App() {
   const [validationError, setValidationError] = useState('');
 
   const debounceTimer = useRef(null);
+  const activeRequestRef = useRef(false);
+  const pendingPayloadRef = useRef(null);
+  const isInitialMount = useRef(true);
   const t = TRANSLATIONS[lang] || TRANSLATIONS.CZ;
 
   // Dark mode effect
@@ -160,49 +164,93 @@ export default function App() {
     setCurrentTab('studio');
   };
 
-  // Debounced Drafting calculation
-  useEffect(() => {
-    if (debounceTimer.current) clearTimeout(debounceTimer.current);
-
-    // Local input validation
-    const invalidKey = Object.keys(inputs).find(
-      k => k !== 'title' && (isNaN(parseFloat(inputs[k])) || parseFloat(inputs[k]) <= 0)
+  // Body measurement validator
+  const validateMeasurements = useCallback((currentInputs) => {
+    const invalidKey = Object.keys(currentInputs).find(
+      k => k !== 'title' && (isNaN(parseFloat(currentInputs[k])) || parseFloat(currentInputs[k]) <= 0)
     );
-
     if (invalidKey) {
       const label = t[`input_${invalidKey}`] || invalidKey;
-      setValidationError(`${t.validationErrorPrefix} "${label}" ${t.validationErrorPositive}`);
+      return `${t.validationErrorPrefix} "${label}" ${t.validationErrorPositive}`;
+    }
+    return '';
+  }, [t]);
+
+  // Real-time queued generation engine (handles rapid 60 FPS slider stream without dropping updates)
+  const executeGenerate = useCallback(async (payload) => {
+    if (activeRequestRef.current) {
+      // If a request is currently inflight, save latest payload into queue
+      pendingPayloadRef.current = payload;
       return;
     }
-    setValidationError('');
 
-    debounceTimer.current = setTimeout(() => {
-      generatePattern();
-    }, 400);
-
-    return () => clearTimeout(debounceTimer.current);
-  }, [inputs, sliders, patternType, part]);
-
-  const generatePattern = async () => {
+    activeRequestRef.current = true;
     setLoading(true);
+
     try {
       const res = await fetch('/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sliders, inputs, patternType, part })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (res.ok) {
         setSvgString(data.svg);
+        if (data.handles) {
+          setHandles(data.handles);
+        }
+        setValidationError('');
       } else {
         setValidationError(data.message || 'Drafting error.');
       }
     } catch {
       setValidationError('Server connection failed.');
     } finally {
+      activeRequestRef.current = false;
       setLoading(false);
+
+      // If a newer handle/slider position arrived during request execution, dispatch immediately!
+      if (pendingPayloadRef.current) {
+        const nextPayload = pendingPayloadRef.current;
+        pendingPayloadRef.current = null;
+        executeGenerate(nextPayload);
+      }
     }
-  };
+  }, []);
+
+  // 1. Text inputs change (typed body measurements) - debounced for typing comfort
+  useEffect(() => {
+    const err = validateMeasurements(inputs);
+    if (err) {
+      setValidationError(err);
+      return;
+    }
+    setValidationError('');
+
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      executeGenerate({ sliders, inputs, patternType, part });
+    }, 250);
+
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
+  }, [inputs, validateMeasurements, executeGenerate, sliders, patternType, part]);
+
+  // 2. Interactive CAD Handles / Sliders change - INSTANT live recalculation on every micro-movement
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      executeGenerate({ sliders, inputs, patternType, part });
+      return;
+    }
+
+    const err = validateMeasurements(inputs);
+    if (err) return;
+
+    // Immediately trigger real-time drafting without waiting for mouse release
+    executeGenerate({ sliders, inputs, patternType, part });
+  }, [sliders, patternType, part, executeGenerate, validateMeasurements, inputs]);
 
   // Export handlers
   const exportPDF = async () => {
@@ -312,6 +360,7 @@ export default function App() {
             part={part}
             setPart={setPart}
             svgString={svgString}
+            handles={handles}
             loading={loading}
             validationError={validationError}
             activeProfile={activeProfile}

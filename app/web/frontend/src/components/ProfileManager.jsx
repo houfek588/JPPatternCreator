@@ -89,7 +89,7 @@ export default function ProfileManager({
           localStorage.setItem('jppattern_profiles_v2', JSON.stringify(merged));
           alert(lang === 'CZ' ? 'Profily byly úspěšně importovány!' : 'Profiles imported successfully!');
         }
-      } catch (err) {
+      } catch {
         alert(lang === 'CZ' ? 'Chyba: Neplatný formát JSON souboru.' : 'Error: Invalid JSON profile format.');
       }
     };

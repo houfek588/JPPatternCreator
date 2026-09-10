@@ -52,8 +52,7 @@ const MEASUREMENT_INFO = {
   }
 };
 
-export default function MeasurementDiagram({ activeField, patternType, lang = 'CZ' }) {
-  const isHosen = patternType === 'hosen';
+export default function MeasurementDiagram({ activeField, lang = 'CZ' }) {
   const info = activeField && MEASUREMENT_INFO[activeField] 
     ? (lang === 'CZ' ? MEASUREMENT_INFO[activeField].cz : MEASUREMENT_INFO[activeField].en)
     : null;

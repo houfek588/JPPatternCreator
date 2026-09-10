@@ -45,6 +45,7 @@ def generate():
         if pattern_type == "bodice":
             collar_depth = float(sliders.get("slider1", 12))
             svg_str = file_gen.gen_bodice_svg_string(inputs, collar_depth=collar_depth, part=part)
+            handles = file_gen.get_bodice_handles(inputs, collar_depth=collar_depth)
         else:
             a = float(sliders.get("slider1", 5))
             b = float(sliders.get("slider2", 12))
@@ -54,8 +55,9 @@ def generate():
             f = float(sliders.get("slider6", 0))
             g = float(sliders.get("slider7", 0))
             svg_str = file_gen.gen_hosen_svg_string(inputs, a, b, c, d, e, f, g, part=part)
+            handles = file_gen.get_hosen_handles(inputs, a, b, c, d, e, f, g)
 
-        return jsonify({"svg": svg_str, "status": "success"})
+        return jsonify({"svg": svg_str, "handles": handles, "status": "success"})
     except meas.ValidationError as err:
         return jsonify({"message": str(err), "status": "error"}), 400
     except Exception as e:
